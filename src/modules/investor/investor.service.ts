@@ -36,6 +36,22 @@ export class InvestorService implements OnApplicationBootstrap {
     }
 
     async getPageable(option: FetchQueryOption, condition: InvestorCondDto) {
+        if (condition.searchQuery) {
+            const searchCondition = {
+                $or: [
+                    {
+                        orgCode: { $regex: condition.searchQuery, $options: "i" },
+                    },
+                    {
+                        orgFullname: { $regex: condition.searchQuery, $options: "i" },
+                    },
+                ],
+            };
+            if (condition.favorite !== undefined) {
+                Object.assign(searchCondition, { favorite: condition.favorite });
+            }
+            return this.investorRepo.getPaging(searchCondition, option);
+        }
         return this.investorRepo.getPaging(condition, option);
     }
 

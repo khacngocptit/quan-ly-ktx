@@ -1,4 +1,4 @@
-import { IsOptional } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class BidCondDto {
     @IsOptional()
@@ -6,4 +6,11 @@ export class BidCondDto {
 
     @IsOptional()
     bidName: any;
+
+    @IsOptional()
+    procuringEntityCode: any;
+
+    @IsString()
+    @IsOptional()
+    searchQuery: string;
 }

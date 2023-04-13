@@ -39,6 +39,20 @@ export class BidService implements OnApplicationBootstrap {
     }
 
     async getPageable(option: FetchQueryOption, condition: BidCondDto) {
+        if (condition.searchQuery) {
+            const searchCondition = {
+                $or: [
+                    {
+                        bidName: { $regex: condition.searchQuery, $options: "i" },
+                        procuringEntityCode: { $regex: condition.searchQuery, $options: "i" },
+                    },
+                ],
+            };
+            if (condition.favorite !== undefined) {
+                Object.assign(searchCondition, { favorite: condition.favorite });
+            }
+            return this.bidRepo.getPaging(searchCondition, option);
+        }
         return this.bidRepo.getPaging(condition, option);
     }
 

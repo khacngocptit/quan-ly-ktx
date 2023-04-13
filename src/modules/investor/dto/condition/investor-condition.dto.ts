@@ -1,4 +1,4 @@
-import { IsOptional } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class InvestorCondDto {
     @IsOptional()
@@ -6,4 +6,11 @@ export class InvestorCondDto {
 
     @IsOptional()
     orgFullname: any;
+
+    @IsOptional()
+    orgCode: any;
+
+    @IsString()
+    @IsOptional()
+    searchQuery: string;
 }
