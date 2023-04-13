@@ -13,6 +13,7 @@ import { BidPageApi } from "./common/bid.constant";
 import { SettingKey } from "../setting/common/setting.constant";
 import * as bluebird from "bluebird";
 import { InvestorDoc } from "../investor/entities/investor.entity";
+import { Cron } from "@nestjs/schedule";
 
 @Injectable()
 export class BidService implements OnApplicationBootstrap {
@@ -63,7 +64,7 @@ export class BidService implements OnApplicationBootstrap {
         return res;
     }
 
-    async cron() {
+    private async _cron() {
         let setting = await this.settingModel.findOne({ key: SettingKey.BID_UPDATE });
         if (!setting) {
             setting = await this.settingModel.create({
@@ -133,5 +134,12 @@ export class BidService implements OnApplicationBootstrap {
         );
         await bulk.execute();
         await this.bidModel.deleteMany({ version: { $ne: version } });
+    }
+
+    @Cron("30 * * * *")
+    async cronJob() {
+        if (process.env.NODE_APP_INSTANCE === "0") {
+            this._cron();
+        }
     }
 }

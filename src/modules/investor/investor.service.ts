@@ -12,6 +12,7 @@ import axios from "axios";
 import { InvestorPageApi } from "./common/investor.constant";
 import { SettingKey } from "../setting/common/setting.constant";
 import * as bluebird from "bluebird";
+import { Cron } from "@nestjs/schedule";
 
 @Injectable()
 export class InvestorService implements OnApplicationBootstrap {
@@ -60,7 +61,7 @@ export class InvestorService implements OnApplicationBootstrap {
         return res;
     }
 
-    async cron() {
+    private async _cron() {
         let setting = await this.settingModel.findOne({ key: SettingKey.INVESTOR_UPDATE });
         if (!setting) {
             setting = await this.settingModel.create({
@@ -118,5 +119,12 @@ export class InvestorService implements OnApplicationBootstrap {
         );
         await bulk.execute();
         await this.investorModel.deleteMany({ version: { $ne: version } });
+    }
+
+    @Cron("0 2 * * *")
+    async cronJob() {
+        if (process.env.NODE_APP_INSTANCE === "0") {
+            this._cron();
+        }
     }
 }

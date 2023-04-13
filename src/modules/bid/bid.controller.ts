@@ -13,10 +13,10 @@ import { ResponseDto } from "src/common/dto/response/response.dto";
 export class BidController {
     constructor(private readonly bidService: BidService) {}
 
-    @Get("test")
-    async test() {
-        await this.bidService.cron();
-    }
+    // @Get("test")
+    // async test() {
+    //     await this.bidService.cron();
+    // }
 
     @Get("pageable")
     @ApiPageableQuery()
