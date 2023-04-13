@@ -64,7 +64,7 @@ export class BidService implements OnApplicationBootstrap {
         return res;
     }
 
-    private async _cron() {
+    async _cron() {
         let setting = await this.settingModel.findOne({ key: SettingKey.BID_UPDATE });
         if (!setting) {
             setting = await this.settingModel.create({
