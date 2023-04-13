@@ -14,6 +14,8 @@ import { OneSignalModule } from "./modules/one-signal/one-signal.module";
 import { RepositoryModule } from "./modules/repository/repository.module";
 import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
+import { InvestorModule } from "./modules/investor/investor.module";
+import { BidModule } from "./modules/bid/bid.module";
 
 @Module({
     imports: [
@@ -35,6 +37,8 @@ import { UserModule } from "./modules/user/user.module";
         DeviceDataModule,
         NotificationModule,
         OneSignalModule,
+        InvestorModule,
+        BidModule,
     ],
     providers: [
         {
