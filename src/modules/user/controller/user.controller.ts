@@ -52,7 +52,7 @@ export class UserController {
     async findMe(@ReqUser() user: UserDocument): Promise<UserResponseDto> {
         const data = await this.userService
             .findById(user._id)
-            .populate("profile")
+            // .populate("profile")
             .select("-authorizationVersion -passwordReset -emailVerify -password");
         return ResponseDto.create(data);
     }

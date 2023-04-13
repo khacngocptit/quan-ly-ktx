@@ -11,6 +11,7 @@ import { UserSchema } from "../user/entities/user.entity";
 import * as db from "./db-collection";
 import { InvestorSchema } from "../investor/entities/investor.entity";
 import { BidSchema } from "../bid/entities/bid.entity";
+import { BidVersionSchema } from "../bid/entities/bid-version.entity";
 
 @Global()
 @Module({
@@ -27,6 +28,7 @@ import { BidSchema } from "../bid/entities/bid.entity";
 
             { name: db.DB_INVESTOR, schema: InvestorSchema },
             { name: db.DB_BID, schema: BidSchema },
+            { name: db.DB_BID_VERSION, schema: BidVersionSchema },
         ]),
     ],
     providers: [FileManagerProvider],
