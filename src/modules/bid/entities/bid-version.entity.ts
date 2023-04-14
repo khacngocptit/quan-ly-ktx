@@ -23,7 +23,7 @@ export class BidVersion {
 
     @IsBoolean()
     @Prop()
-    notifNeeded: boolean;
+    notifyNeeded: boolean;
 }
 
 export const BidVersionSchema = SchemaFactory.createForClass(BidVersion);

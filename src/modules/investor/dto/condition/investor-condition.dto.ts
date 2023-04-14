@@ -10,6 +10,9 @@ export class InvestorCondDto {
     @IsOptional()
     orgCode: any;
 
+    @IsOptional()
+    taxCode: any;
+
     @IsString()
     @IsOptional()
     searchQuery: string;

@@ -102,9 +102,7 @@ export class BidService implements OnApplicationBootstrap {
             const bulk = this.bidModel.collection.initializeUnorderedBulkOp();
             const versionBulk = this.bidVersionModel.collection.initializeUnorderedBulkOp();
             const favoriteInvestors = await this.investorModel.find({ favorite: true }).select("orgCode").lean();
-            console.log(favoriteInvestors);
             const investorCodes = favoriteInvestors.map((x) => x["orgCode"]);
-            console.log("HEHE", investorCodes);
             const httpsAgent = new https.Agent({
                 rejectUnauthorized: false,
             });
@@ -114,7 +112,6 @@ export class BidService implements OnApplicationBootstrap {
                     let pageNumber = 0;
                     let last = false;
                     do {
-                        console.log(investorCode, pageNumber, last);
                         const data = await axios.post(
                             BidPageApi,
                             {
@@ -167,7 +164,6 @@ export class BidService implements OnApplicationBootstrap {
                         });
                         last = data.data.page.last;
                         pageNumber += 1;
-                        console.log(data.data.page);
                     } while (last !== true);
                 },
                 { concurrency: 4 },
@@ -180,29 +176,23 @@ export class BidService implements OnApplicationBootstrap {
             }
             await this.bidModel.deleteMany({ version: { $ne: version } });
             await this.bidVersionModel.deleteMany({ version: { $ne: version } });
-            const notifNeeded = await this.bidVersionModel.find({ notifNeeded: true });
+            const notifyNeeded = await this.bidVersionModel.find({ notifyNeeded: true });
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            notifNeeded.map(async (bid) => {
+            notifyNeeded.map(async (bid) => {
                 this.notifService.createNotifAll(
                     {
                         title: `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName}`,
                         description: "Thông báo về gói thầu",
                         htmlContent:
                             `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName} đã được ` +
-                                bid.notifyVersion ===
-                            "00"
-                                ? "tạo mới"
-                                : "cập nhật",
+                            (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
                         content:
                             `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName} đã được ` +
-                                bid.notifyVersion ===
-                            "00"
-                                ? "tạo mới"
-                                : "cập nhật",
+                            (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
                     },
                     user,
                 );
-                bid.notifNeeded = false;
+                bid.notifyNeeded = false;
                 await bid.save();
             });
         } catch (err) {
