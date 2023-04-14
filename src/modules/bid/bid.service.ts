@@ -164,20 +164,6 @@ export class BidService implements OnApplicationBootstrap {
                                         version,
                                     },
                                 });
-                            versionBulk
-                                .find({
-                                    bidId: i.bidId,
-                                    notifyVersion: i.notifyVersion,
-                                })
-                                .updateOne({
-                                    $set: {
-                                        bidName: i.bidName,
-                                        investorName: i.investorName,
-                                        notifyVersion: i.notifyVersion,
-                                        notifyNeeded: false,
-                                        version,
-                                    },
-                                });
                         });
                         last = data.data.page.last;
                         pageNumber += 1;
@@ -186,8 +172,12 @@ export class BidService implements OnApplicationBootstrap {
                 },
                 { concurrency: 4 },
             );
-            await bulk.execute();
-            await versionBulk.execute();
+            if (bulk.length > 0) {
+                await bulk.execute();
+            }
+            if (versionBulk.length > 0) {
+                await versionBulk.execute();
+            }
             await this.bidModel.deleteMany({ version: { $ne: version } });
             await this.bidVersionModel.deleteMany({ version: { $ne: version } });
             const notifNeeded = await this.bidVersionModel.find({ notifNeeded: true });
@@ -212,6 +202,8 @@ export class BidService implements OnApplicationBootstrap {
                     },
                     user,
                 );
+                bid.notifNeeded = false;
+                bid.save();
             });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });

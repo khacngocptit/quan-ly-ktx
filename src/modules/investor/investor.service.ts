@@ -140,7 +140,9 @@ export class InvestorService implements OnApplicationBootstrap {
                 },
                 { concurrency: 4 },
             );
-            await bulk.execute();
+            if (bulk.length > 0) {
+                await bulk.execute();
+            }
             await this.investorModel.deleteMany({ version: { $ne: version } });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
