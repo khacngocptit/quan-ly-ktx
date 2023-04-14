@@ -182,7 +182,7 @@ export class BidService implements OnApplicationBootstrap {
             await this.bidVersionModel.deleteMany({ version: { $ne: version } });
             const notifNeeded = await this.bidVersionModel.find({ notifNeeded: true });
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            notifNeeded.map((bid) => {
+            notifNeeded.map(async (bid) => {
                 this.notifService.createNotifAll(
                     {
                         title: `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName}`,
@@ -203,7 +203,7 @@ export class BidService implements OnApplicationBootstrap {
                     user,
                 );
                 bid.notifNeeded = false;
-                bid.save();
+                await bid.save();
             });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
