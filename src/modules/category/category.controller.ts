@@ -10,9 +10,24 @@ import { ResponseDto } from "src/common/dto/response/response.dto";
 export class CategoryController {
     constructor(private readonly catService: CategoryService) {}
 
-    @Get("category/province/all")
-    async getProvinceCat() {
-        const data = await this.catService.getProvinceCat();
+    @Get("uy-ban-nhan-dan/all")
+    async getUBND() {
+        const data = await this.catService.getUBND();
+        return ResponseDto.create(data);
+    }
+    @Get("bo-ban-nganh/all")
+    async getBoBN() {
+        const data = await this.catService.getBoBanNganh();
+        return ResponseDto.create(data);
+    }
+    @Get("tap-doan/all")
+    async getTapDoan() {
+        const data = await this.catService.getTapDoan();
+        return ResponseDto.create(data);
+    }
+    @Get("status/all")
+    async getTrangThai() {
+        const data = await this.catService.getRoleStatus();
         return ResponseDto.create(data);
     }
 

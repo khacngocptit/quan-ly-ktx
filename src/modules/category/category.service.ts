@@ -13,7 +13,7 @@ export class CategoryService {
         });
     }
 
-    async getProvinceCat() {
+    async getUBND() {
         const data = await axios.post(
             CATEGORY_BY_CAT_TYPE,
             {
@@ -23,6 +23,57 @@ export class CategoryService {
                     },
                     groupCode: {
                         equals: "province", //not_equals, equals, in
+                    },
+                },
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
+    }
+
+    async getBoBanNganh() {
+        const data = await axios.post(
+            CATEGORY_BY_CAT_TYPE,
+            {
+                queryParams: {
+                    categoryTypeCode: {
+                        equals: "classification_dependent",
+                    },
+                    groupCode: {
+                        equals: "ministry_of_branches",
+                    },
+                },
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
+    }
+
+    async getTapDoan() {
+        const data = await axios.post(
+            CATEGORY_BY_CAT_TYPE,
+            {
+                queryParams: {
+                    categoryTypeCode: {
+                        equals: "classification_dependent",
+                    },
+                    groupCode: {
+                        equals: "corporations",
+                    },
+                },
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
+    }
+
+    async getRoleStatus() {
+        const data = await axios.post(
+            CATEGORY_BY_CAT_TYPE,
+            {
+                queryParams: {
+                    categoryTypeCode: {
+                        equals: "ROLE_STATUS",
                     },
                 },
             },
