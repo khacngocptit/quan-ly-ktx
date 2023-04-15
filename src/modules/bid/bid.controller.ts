@@ -34,7 +34,7 @@ export class BidController {
 
     @Get("info/:versionId")
     async getInfoByVersionId(@Param("versionId") versionId: string) {
-        const data = await this.getInfoByVersionId(versionId);
+        const data = await this.bidService.getBidInfoByVersionId(versionId);
         return ResponseDto.create(data);
     }
 
