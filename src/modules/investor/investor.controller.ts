@@ -43,4 +43,10 @@ export class InvestorController {
         const data = await this.investorService.setFavorite(_id, false);
         return ResponseDto.create(data);
     }
+
+    @Get("info/:orgCode")
+    async getInfoByOrgCode(@Param("orgCode") orgCode: string) {
+        const data = await this.investorService.getInfoByOrgCode(orgCode);
+        return ResponseDto.create(data);
+    }
 }

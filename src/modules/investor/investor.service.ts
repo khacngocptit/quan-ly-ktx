@@ -9,7 +9,7 @@ import { InvestorRepository } from "./repository/investor.repository";
 import { SettingDocument } from "../setting/entities/setting.entity";
 import * as https from "https";
 import axios from "axios";
-import { InvestorPageApi } from "./common/investor.constant";
+import { INVESTOR_DETAILED, INVESTOR_PAGE_API } from "./common/investor.constant";
 import { SettingKey } from "../setting/common/setting.constant";
 import * as bluebird from "bluebird";
 import { Cron } from "@nestjs/schedule";
@@ -19,6 +19,7 @@ import { SystemRole } from "../user/common/user.constant";
 
 @Injectable()
 export class InvestorService implements OnApplicationBootstrap {
+    private readonly httpsAgent;
     constructor(
         @InjectModel(DB_INVESTOR)
         private readonly investorModel: Model<InvestorDoc>,
@@ -28,7 +29,11 @@ export class InvestorService implements OnApplicationBootstrap {
         private readonly notifService: NotificationService,
         @InjectModel(DB_USER)
         private readonly userModel: Model<UserDocument>,
-    ) {}
+    ) {
+        this.httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
+        });
+    }
     async onApplicationBootstrap() {
         const exist = await this.settingModel.exists({
             key: SettingKey.INVESTOR_UPDATE,
@@ -65,6 +70,17 @@ export class InvestorService implements OnApplicationBootstrap {
         return this.investorModel.findById(_id);
     }
 
+    async getInfoByOrgCode(orgCode: string) {
+        const data = await axios.post(
+            INVESTOR_DETAILED,
+            {
+                orgCode,
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
+    }
+
     async setFavorite(_id: string, newFavorite: boolean) {
         const res = await this.investorModel.findOneAndUpdate(
             {
@@ -96,11 +112,8 @@ export class InvestorService implements OnApplicationBootstrap {
             setting.value = !setting.value;
             await setting.save();
             const bulk = this.investorModel.collection.initializeUnorderedBulkOp();
-            const httpsAgent = new https.Agent({
-                rejectUnauthorized: false,
-            });
             const fetch = await axios.post(
-                InvestorPageApi,
+                INVESTOR_PAGE_API,
                 {
                     pageSize: 20,
                     pageNumber: 0,
@@ -110,14 +123,14 @@ export class InvestorService implements OnApplicationBootstrap {
                         },
                     },
                 },
-                { httpsAgent },
+                { httpsAgent: this.httpsAgent },
             );
             const totalPages = fetch.data.ebidOrgInfos.totalPages;
             await bluebird.map(
                 Array.from(Array(totalPages).keys()),
                 async (pageNumber) => {
                     const data = await axios.post(
-                        InvestorPageApi,
+                        INVESTOR_PAGE_API,
                         {
                             pageSize: 20,
                             pageNumber,
@@ -127,7 +140,7 @@ export class InvestorService implements OnApplicationBootstrap {
                                 },
                             },
                         },
-                        { httpsAgent },
+                        { httpsAgent: this.httpsAgent },
                     );
                     data.data.ebidOrgInfos.content.map((i) => {
                         bulk.find({ orgCode: i.orgCode })

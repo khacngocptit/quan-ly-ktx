@@ -54,4 +54,10 @@ export class CategoryController {
         const data = await this.catService.getAreaByCode(code);
         return ResponseDto.create(data);
     }
+
+    @Get("co-quan-chu-quan/:code")
+    async getCqcqByCode(@Param("code") code: string) {
+        const data = await this.catService.getCoQuanChuQuanByCode(code);
+        return ResponseDto.create(data);
+    }
 }

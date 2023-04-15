@@ -138,4 +138,22 @@ export class CategoryService {
         );
         return data.data;
     }
+
+    async getCoQuanChuQuanByCode(code: string) {
+        const data = await axios.post(
+            CATEGORY_BY_CAT_TYPE,
+            {
+                queryParams: {
+                    categoryTypeCode: {
+                        equals: "classification_dependent",
+                    },
+                    code: {
+                        equals: code,
+                    },
+                },
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data.filter((x) => x.code === code);
+    }
 }
