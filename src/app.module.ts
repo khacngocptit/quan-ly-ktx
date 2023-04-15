@@ -16,6 +16,7 @@ import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
 import { InvestorModule } from "./modules/investor/investor.module";
 import { BidModule } from "./modules/bid/bid.module";
+import { CategoryModule } from "./modules/category/category.module";
 
 @Module({
     imports: [
@@ -39,6 +40,7 @@ import { BidModule } from "./modules/bid/bid.module";
         OneSignalModule,
         InvestorModule,
         BidModule,
+        CategoryModule,
     ],
     providers: [
         {

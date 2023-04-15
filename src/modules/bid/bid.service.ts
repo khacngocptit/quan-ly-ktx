@@ -9,7 +9,7 @@ import { BidRepository } from "./repository/bid.repository";
 import { SettingDocument } from "../setting/entities/setting.entity";
 import * as https from "https";
 import axios from "axios";
-import { BidPageApi } from "./common/bid.constant";
+import { BID_DETAILED, BID_PAGE_API, BID_VERSION_LIST } from "./common/bid.constant";
 import { SettingKey } from "../setting/common/setting.constant";
 import * as bluebird from "bluebird";
 import { InvestorDoc } from "../investor/entities/investor.entity";
@@ -21,6 +21,7 @@ import { BidVersionDoc } from "./entities/bid-version.entity";
 
 @Injectable()
 export class BidService implements OnApplicationBootstrap {
+    private readonly httpsAgent: https.Agent;
     constructor(
         @InjectModel(DB_BID)
         private readonly bidModel: Model<BidDoc>,
@@ -34,7 +35,11 @@ export class BidService implements OnApplicationBootstrap {
         private readonly notifService: NotificationService,
         @InjectModel(DB_USER)
         private readonly userModel: Model<UserDocument>,
-    ) {}
+    ) {
+        this.httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
+        });
+    }
     async onApplicationBootstrap() {
         const exist = await this.settingModel.exists({
             key: SettingKey.BID_UPDATE,
@@ -67,6 +72,28 @@ export class BidService implements OnApplicationBootstrap {
 
     async getById(_id: string) {
         return this.bidModel.findById(_id);
+    }
+
+    async getBidVersion(notifyNo: string) {
+        const data = await axios.post(
+            BID_VERSION_LIST,
+            {
+                notifyNo,
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
+    }
+
+    async getBidInfoByVersionId(versionId: string) {
+        const data = await axios.post(
+            BID_DETAILED,
+            {
+                id: versionId,
+            },
+            { httpsAgent: this.httpsAgent },
+        );
+        return data.data;
     }
 
     async setFavorite(_id: string, newFavorite: boolean) {
@@ -103,9 +130,6 @@ export class BidService implements OnApplicationBootstrap {
             const versionBulk = this.bidVersionModel.collection.initializeUnorderedBulkOp();
             const favoriteInvestors = await this.investorModel.find({ favorite: true }).select("orgCode").lean();
             const investorCodes = favoriteInvestors.map((x) => x["orgCode"]);
-            const httpsAgent = new https.Agent({
-                rejectUnauthorized: false,
-            });
             await bluebird.map(
                 investorCodes,
                 async (investorCode) => {
@@ -113,7 +137,7 @@ export class BidService implements OnApplicationBootstrap {
                     let last = false;
                     do {
                         const data = await axios.post(
-                            BidPageApi,
+                            BID_PAGE_API,
                             {
                                 pageSize: 10,
                                 pageNumber: pageNumber.toString(),
@@ -138,7 +162,7 @@ export class BidService implements OnApplicationBootstrap {
                                     },
                                 ],
                             },
-                            { httpsAgent },
+                            { httpsAgent: this.httpsAgent },
                         );
                         data.data.page.content.map((i) => {
                             bulk.find({ bidId: i.bidId })

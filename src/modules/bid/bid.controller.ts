@@ -26,6 +26,18 @@ export class BidController {
         return ResponseDto.create(data);
     }
 
+    @Get("version/:notifyNo")
+    async getVersionByNotifyNo(@Param("notifyNo") notifyNo: string) {
+        const data = await this.bidService.getBidVersion(notifyNo);
+        return ResponseDto.create(data);
+    }
+
+    @Get("info/:versionId")
+    async getInfoByVersionId(@Param("versionId") versionId: string) {
+        const data = await this.getInfoByVersionId(versionId);
+        return ResponseDto.create(data);
+    }
+
     @Get(":_id")
     async getById(@Param("_id") _id: string) {
         const data = await this.bidService.getById(_id);
