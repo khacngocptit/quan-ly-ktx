@@ -213,6 +213,9 @@ export class BidService implements OnApplicationBootstrap {
                         content:
                             `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName} đã được ` +
                             (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
+                        info: {
+                            type: bid.notifyVersion === "00" ? "TAO_MOI" : "CAP_NHAT",
+                        },
                     },
                     user,
                 );
