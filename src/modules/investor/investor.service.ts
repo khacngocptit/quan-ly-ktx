@@ -99,7 +99,7 @@ export class InvestorService implements OnApplicationBootstrap {
         return res;
     }
 
-    private async _cron() {
+    async _cron() {
         try {
             let setting = await this.settingModel.findOne({ key: SettingKey.INVESTOR_UPDATE });
             if (!setting) {

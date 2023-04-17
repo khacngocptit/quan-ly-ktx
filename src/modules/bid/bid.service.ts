@@ -179,6 +179,7 @@ export class BidService implements OnApplicationBootstrap {
                                 .updateOne({
                                     $set: {
                                         bidName: i.bidName,
+                                        notifyNo: i.notifyNo,
                                         investorName: i.investorName,
                                         notifyVersion: i.notifyVersion,
                                         notifyNeeded: true,
@@ -203,6 +204,7 @@ export class BidService implements OnApplicationBootstrap {
             const notifyNeeded = await this.bidVersionModel.find({ notifyNeeded: true });
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
             notifyNeeded.map(async (bid) => {
+                const realBid = await this.bidModel.findOne({ bidId: bid.bidId });
                 this.notifService.createNotifAll(
                     {
                         title: `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName}`,
@@ -215,6 +217,8 @@ export class BidService implements OnApplicationBootstrap {
                             (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
                         info: {
                             type: bid.notifyVersion === "00" ? "TAO_MOI" : "CAP_NHAT",
+                            notifyNo: bid.notifyNo,
+                            _id: realBid._id,
                         },
                     },
                     user,

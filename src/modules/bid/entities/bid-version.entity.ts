@@ -19,6 +19,10 @@ export class BidVersion {
 
     @IsString()
     @Prop()
+    notifyNo: string;
+
+    @IsString()
+    @Prop()
     notifyVersion: string;
 
     @IsBoolean()

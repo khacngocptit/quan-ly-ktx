@@ -13,10 +13,10 @@ import { ResponseDto } from "src/common/dto/response/response.dto";
 export class InvestorController {
     constructor(private readonly investorService: InvestorService) {}
 
-    // @Get("test")
-    // async test() {
-    //     this.investorService.cron();
-    // }
+    @Get("test")
+    async test() {
+        await this.investorService._cron();
+    }
 
     @Get("pageable")
     @ApiPageableQuery()
