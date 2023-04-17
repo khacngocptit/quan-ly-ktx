@@ -14,6 +14,9 @@ export class NotificationCondition {
     "info": any;
 
     @IsOptional()
+    "info.type": any;
+
+    @IsOptional()
     "info.idLopHanhChinh": any;
 
     @IsOptional()
