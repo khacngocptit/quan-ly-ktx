@@ -9,9 +9,9 @@ export class BidVersion {
     @Prop()
     bidId: string;
 
-    @IsString()
+    @IsString({ each: true })
     @Prop()
-    bidName: string;
+    bidName: string[];
 
     @IsString()
     @Prop()
