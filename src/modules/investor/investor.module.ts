@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { InvestorService } from "./investor.service";
 import { InvestorController } from "./investor.controller";
+import { InvestorService } from "./investor.service";
 import { InvestorRepository } from "./repository/investor.repository";
 
 @Module({

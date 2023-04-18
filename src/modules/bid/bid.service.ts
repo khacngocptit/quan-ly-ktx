@@ -240,10 +240,147 @@ export class BidService implements OnApplicationBootstrap {
         }
     }
 
+    async _cronV2() {
+        try {
+            let setting = await this.settingModel.findOne({ key: SettingKey.BID_UPDATE });
+            if (!setting) {
+                setting = await this.settingModel.create({
+                    key: SettingKey.BID_UPDATE,
+                    value: false,
+                });
+            }
+            const version = setting.value;
+            setting.value = !setting.value;
+            await setting.save();
+            const bulk = this.bidModel.collection.initializeUnorderedBulkOp();
+            const versionBulk = this.bidVersionModel.collection.initializeUnorderedBulkOp();
+            const favoriteInvestors = await this.investorModel
+                .find({
+                    // favorite: true
+                })
+                .select("orgCode favorite")
+                .lean();
+            const investorCodes = favoriteInvestors.map((x) => x["orgCode"]);
+            const mapInvestorFavorite = favoriteInvestors.reduce(
+                (map, i) => Object.assign(map, { [i.orgCode]: i.favorite }),
+                {},
+            );
+            await bluebird.map(
+                investorCodes,
+                async (investorCode, i) => {
+                    console.log(i, investorCodes.length);
+                    let pageNumber = 0;
+                    let last = false;
+                    do {
+                        const data = await axios.post(
+                            BID_PAGE_API,
+                            {
+                                pageSize: 10,
+                                pageNumber: pageNumber.toString(),
+                                query: [
+                                    {
+                                        index: "es-contractor-selection",
+                                        keyWord: investorCode,
+                                        matchType: "exact",
+                                        matchFields: ["procuringEntityCode"],
+                                        filters: [
+                                            {
+                                                fieldName: "type",
+                                                searchType: "in",
+                                                fieldValues: ["es-notify-contractor"],
+                                            },
+                                            {
+                                                fieldName: "caseKHKQ",
+                                                searchType: "not_in",
+                                                fieldValues: ["1"],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            { httpsAgent: this.httpsAgent },
+                        );
+                        data.data.page.content.map((i) => {
+                            bulk.find({ bidId: i.bidId })
+                                .upsert()
+                                .updateOne({
+                                    $set: { version, ...i },
+                                });
+                            versionBulk
+                                .find({
+                                    bidId: i.bidId,
+                                    notifyVersion: { $ne: i.notifyVersion },
+                                })
+                                .upsert()
+                                .updateOne({
+                                    $set: {
+                                        bidName: i.bidName,
+                                        notifyNo: i.notifyNo,
+                                        investorName: i.investorName,
+                                        notifyVersion: i.notifyVersion,
+                                        favorite: mapInvestorFavorite[investorCode],
+                                        notifyNeeded: true,
+                                        version,
+                                    },
+                                });
+                        });
+                        last = data.data.page.last;
+                        pageNumber += 1;
+                    } while (last !== true);
+                },
+                { concurrency: 4 },
+            );
+            if (bulk.length > 0) {
+                await bulk.execute();
+            }
+            if (versionBulk.length > 0) {
+                await versionBulk.execute();
+            }
+            await this.bidModel.deleteMany({ version: { $ne: version } });
+            await this.bidVersionModel.deleteMany({ version: { $ne: version } });
+            const notifyNeeded = await this.bidVersionModel.find({ favorite: true, notifyNeeded: true });
+            const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
+            notifyNeeded.map(async (bid) => {
+                const realBid = await this.bidModel.findOne({ bidId: bid.bidId });
+                this.notifService.createNotifAll(
+                    {
+                        title: `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName}`,
+                        description: "Thông báo về gói thầu",
+                        htmlContent:
+                            `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName} đã được ` +
+                            (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
+                        content:
+                            `Thông báo gói thầu ${bid.bidName} của chủ đầu tư ${bid.investorName} đã được ` +
+                            (bid.notifyVersion === "00" ? "tạo mới" : "cập nhật"),
+                        info: {
+                            type: bid.notifyVersion === "00" ? "TAO_MOI" : "CAP_NHAT",
+                            notifyNo: bid.notifyNo,
+                            _id: realBid._id,
+                        },
+                    },
+                    user,
+                );
+                bid.notifyNeeded = false;
+                await bid.save();
+            });
+        } catch (err) {
+            const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
+            this.notifService.createNotifAll(
+                {
+                    title: "Lỗi chạy cron gói thầu",
+                    description: "Thông báo lỗi",
+                    htmlContent: `Cron cập nhật gói thầu chạy vào lúc ${new Date()} bị lỗi`,
+                    content: err.message,
+                },
+                user,
+            );
+        }
+    }
+
     @Cron("30 * * * *")
     async cronJob() {
         if (process.env.NODE_APP_INSTANCE === "0") {
-            this._cron();
+            this._cronV2();
         }
     }
 }

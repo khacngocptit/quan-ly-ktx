@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { DB_INVESTOR, DB_SETTING, DB_USER } from "../repository/db-collection";
+import { DB_BID, DB_INVESTOR, DB_SETTING, DB_USER } from "../repository/db-collection";
 import { Model } from "mongoose";
 import { InvestorDoc } from "./entities/investor.entity";
 import { InvestorCondDto } from "./dto/condition/investor-condition.dto";
@@ -16,6 +16,7 @@ import { Cron } from "@nestjs/schedule";
 import { NotificationService } from "../notification/service/notification.service";
 import { UserDocument } from "../user/entities/user.entity";
 import { SystemRole } from "../user/common/user.constant";
+import { BidDoc } from "../bid/entities/bid.entity";
 
 @Injectable()
 export class InvestorService implements OnApplicationBootstrap {
@@ -29,6 +30,8 @@ export class InvestorService implements OnApplicationBootstrap {
         private readonly notifService: NotificationService,
         @InjectModel(DB_USER)
         private readonly userModel: Model<UserDocument>,
+        @InjectModel(DB_BID)
+        private readonly bidModel: Model<BidDoc>,
     ) {
         this.httpsAgent = new https.Agent({
             rejectUnauthorized: false,
@@ -96,6 +99,7 @@ export class InvestorService implements OnApplicationBootstrap {
         if (!res) {
             throw new BadRequestException("Thay đổi trạng thái không hợp lệ");
         }
+        this.bidModel.updateMany({ procuringEntityCode: res["orgCode"] }, { favorite: newFavorite });
         return res;
     }
 
