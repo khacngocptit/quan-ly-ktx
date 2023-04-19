@@ -55,4 +55,10 @@ export class BidController {
         const data = await this.bidService.setFavorite(_id, false);
         return ResponseDto.create(data);
     }
+
+    @Get(":_id/direct-url")
+    async directUrl(@Param("_id") _id: string) {
+        const data = await this.bidService.getLink(_id);
+        return ResponseDto.create(data);
+    }
 }

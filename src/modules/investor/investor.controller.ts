@@ -13,9 +13,9 @@ import { ResponseDto } from "src/common/dto/response/response.dto";
 export class InvestorController {
     constructor(private readonly investorService: InvestorService) {}
 
-    @Get("test")
+    @Get("cron/manual")
     async test() {
-        await this.investorService._cron();
+        this.investorService._cron();
     }
 
     @Get("pageable")

@@ -383,4 +383,9 @@ export class BidService implements OnApplicationBootstrap {
             this._cronV2();
         }
     }
+
+    async getLink(_id: string) {
+        const bid = await this.bidModel.findById(_id).lean();
+        return `https://muasamcong.mpi.gov.vn/web/guest/contractor-selection?p_p_id=egpportalcontractorselectionv2_WAR_egpportalcontractorselectionv2&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_egpportalcontractorselectionv2_WAR_egpportalcontractorselectionv2_render=detail&type=es-notify-contractor&stepCode=${bid["stepCode"]}&id=${bid["id"]}&notifyId=${bid["notifyId"]}&inputResultId=undefined&bidOpenId=undefined&techReqId=undefined&bidPreNotifyResultId=undefined&bidPreOpenId=undefined&processApply=${bid["processApply"]}&bidMode=${bid["bidMode"]}&notifyNo=${bid["notifyNo"]}&planNo=${bid["planNo"]}&pno=undefined`;
+    }
 }
