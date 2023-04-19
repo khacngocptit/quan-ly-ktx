@@ -146,14 +146,18 @@ export class InvestorService implements OnApplicationBootstrap {
                         },
                         { httpsAgent: this.httpsAgent },
                     );
-                    await bluebird.map(data.data.ebidOrgInfos.content, async (i) => {
-                        const info = await this.getInfoByOrgCode(i.orgCode);
-                        bulk.find({ orgCode: i.orgCode })
-                            .upsert()
-                            .updateOne({
-                                $set: { version, ...i, ...info },
-                            });
-                    });
+                    await bluebird.map(
+                        data.data.ebidOrgInfos.content,
+                        async (i) => {
+                            const info = await this.getInfoByOrgCode(i.orgCode);
+                            bulk.find({ orgCode: i.orgCode })
+                                .upsert()
+                                .updateOne({
+                                    $set: { version, ...i, ...info },
+                                });
+                        },
+                        { concurrency: 2 },
+                    );
                     console.log(pageNumber);
                 },
                 { concurrency: 4 },
