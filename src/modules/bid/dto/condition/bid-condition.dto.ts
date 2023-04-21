@@ -13,4 +13,7 @@ export class BidCondDto {
     @IsString()
     @IsOptional()
     searchQuery: string;
+
+    @IsOptional()
+    status: any;
 }
