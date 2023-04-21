@@ -16,4 +16,7 @@ export class BidCondDto {
 
     @IsOptional()
     status: any;
+
+    @IsOptional()
+    bidCloseDate: any;
 }
