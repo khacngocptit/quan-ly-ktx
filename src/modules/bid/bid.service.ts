@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { DB_BID, DB_BID_VERSION, DB_INVESTOR, DB_SETTING, DB_USER } from "../repository/db-collection";
+import { DB_BID, DB_BID_VERSION, DB_INVESTOR, DB_LOG, DB_SETTING, DB_USER } from "../repository/db-collection";
 import { Model } from "mongoose";
 import { BidDoc } from "./entities/bid.entity";
 import { BidCondDto } from "./dto/condition/bid-condition.dto";
@@ -18,6 +18,7 @@ import { NotificationService } from "../notification/service/notification.servic
 import { UserDocument } from "../user/entities/user.entity";
 import { SystemRole } from "../user/common/user.constant";
 import { BidVersionDoc } from "./entities/bid-version.entity";
+import { LogDocument } from "../log/entities/log.entity";
 
 @Injectable()
 export class BidService implements OnApplicationBootstrap {
@@ -29,6 +30,8 @@ export class BidService implements OnApplicationBootstrap {
         private readonly bidVersionModel: Model<BidVersionDoc>,
         @InjectModel(DB_INVESTOR)
         private readonly investorModel: Model<InvestorDoc>,
+        @InjectModel(DB_LOG)
+        private readonly logModel: Model<LogDocument>,
         private readonly bidRepo: BidRepository,
         @InjectModel(DB_SETTING)
         private readonly settingModel: Model<SettingDocument>,
@@ -228,12 +231,11 @@ export class BidService implements OnApplicationBootstrap {
             });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            this.notifService.createNotifAll(
+            this.logModel.create(
                 {
                     title: "Lỗi chạy cron gói thầu",
-                    description: "Thông báo lỗi",
-                    htmlContent: `Cron cập nhật gói thầu chạy vào lúc ${new Date()} bị lỗi`,
-                    content: err.message,
+                    content: "Thông báo lỗi",
+                    info: err,
                 },
                 user,
             );

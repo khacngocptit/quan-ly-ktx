@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { DB_BID, DB_INVESTOR, DB_SETTING, DB_USER } from "../repository/db-collection";
+import { DB_BID, DB_INVESTOR, DB_LOG, DB_SETTING, DB_USER } from "../repository/db-collection";
 import { Model } from "mongoose";
 import { InvestorDoc } from "./entities/investor.entity";
 import { InvestorCondDto } from "./dto/condition/investor-condition.dto";
@@ -17,6 +17,7 @@ import { NotificationService } from "../notification/service/notification.servic
 import { UserDocument } from "../user/entities/user.entity";
 import { SystemRole } from "../user/common/user.constant";
 import { BidDoc } from "../bid/entities/bid.entity";
+import { LogDocument } from "../log/entities/log.entity";
 
 @Injectable()
 export class InvestorService implements OnApplicationBootstrap {
@@ -32,6 +33,8 @@ export class InvestorService implements OnApplicationBootstrap {
         private readonly userModel: Model<UserDocument>,
         @InjectModel(DB_BID)
         private readonly bidModel: Model<BidDoc>,
+        @InjectModel(DB_LOG)
+        private readonly logModel: Model<LogDocument>,
     ) {
         this.httpsAgent = new https.Agent({
             rejectUnauthorized: false,
@@ -168,12 +171,11 @@ export class InvestorService implements OnApplicationBootstrap {
             await this.investorModel.deleteMany({ version: { $ne: version } });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            this.notifService.createNotifAll(
+            this.logModel.create(
                 {
                     title: "Lỗi chạy cron chủ đầu tư",
-                    description: "Thông báo lỗi",
-                    htmlContent: `Cron cập nhật chủ đầu tư chạy vào lúc ${new Date()} bị lỗi`,
-                    content: err.message,
+                    content: "Thông báo lỗi",
+                    info: err,
                 },
                 user,
             );

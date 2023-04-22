@@ -12,3 +12,4 @@ export const DB_TOPIC = "Topic";
 export const DB_INVESTOR = "Investor";
 export const DB_BID = "Bid";
 export const DB_BID_VERSION = "BidVersion";
+export const DB_LOG = "Log";

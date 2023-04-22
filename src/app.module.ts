@@ -17,6 +17,7 @@ import { UserModule } from "./modules/user/user.module";
 import { InvestorModule } from "./modules/investor/investor.module";
 import { BidModule } from "./modules/bid/bid.module";
 import { CategoryModule } from "./modules/category/category.module";
+import { LogModule } from "./modules/log/log.module";
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { CategoryModule } from "./modules/category/category.module";
         InvestorModule,
         BidModule,
         CategoryModule,
+        LogModule,
     ],
     providers: [
         {
