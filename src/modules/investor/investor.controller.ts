@@ -8,7 +8,7 @@ import { InvestorCondDto } from "./dto/condition/investor-condition.dto";
 import { ResponseDto } from "src/common/dto/response/response.dto";
 
 @Controller("investor")
-@ApiTags("Investor")
+@ApiTags("investor")
 @Authorization()
 export class InvestorController {
     constructor(private readonly investorService: InvestorService) {}
