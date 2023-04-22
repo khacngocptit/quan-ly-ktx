@@ -231,14 +231,11 @@ export class BidService implements OnApplicationBootstrap {
             });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            this.logModel.create(
-                {
-                    title: "Lỗi chạy cron gói thầu",
-                    content: "Thông báo lỗi",
-                    info: err,
-                },
-                user,
-            );
+            this.logModel.create({
+                title: "Lỗi chạy cron gói thầu",
+                content: "Thông báo lỗi",
+                info: err,
+            });
         }
     }
 

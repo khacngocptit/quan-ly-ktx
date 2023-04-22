@@ -171,14 +171,11 @@ export class InvestorService implements OnApplicationBootstrap {
             await this.investorModel.deleteMany({ version: { $ne: version } });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            this.logModel.create(
-                {
-                    title: "Lỗi chạy cron chủ đầu tư",
-                    content: "Thông báo lỗi",
-                    info: err,
-                },
-                user,
-            );
+            this.logModel.create({
+                title: "Lỗi chạy cron chủ đầu tư",
+                content: "Thông báo lỗi",
+                info: err,
+            });
         }
     }
 
