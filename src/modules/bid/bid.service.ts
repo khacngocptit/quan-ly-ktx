@@ -327,7 +327,7 @@ export class BidService implements OnApplicationBootstrap {
                         pageNumber += 1;
                     } while (last !== true);
                 },
-                { concurrency: 4 },
+                { concurrency: 1 },
             );
             if (bulk.length > 0) {
                 await bulk.execute();
@@ -364,15 +364,20 @@ export class BidService implements OnApplicationBootstrap {
             });
         } catch (err) {
             const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-            this.notifService.createNotifAll(
-                {
-                    title: "Lỗi chạy cron gói thầu",
-                    description: "Thông báo lỗi",
-                    htmlContent: `Cron cập nhật gói thầu chạy vào lúc ${new Date()} bị lỗi`,
-                    content: err.message,
-                },
-                user,
-            );
+            // this.notifService.createNotifAll(
+            //     {
+            //         title: "Lỗi chạy cron gói thầu",
+            //         description: "Thông báo lỗi",
+            //         htmlContent: `Cron cập nhật gói thầu chạy vào lúc ${new Date()} bị lỗi`,
+            //         content: err.message,
+            //     },
+            //     user,
+            // );
+            this.logModel.create({
+                title: "Lỗi chạy cron gói thầu",
+                content: "Thông báo lỗi",
+                info: err,
+            });
         }
     }
 

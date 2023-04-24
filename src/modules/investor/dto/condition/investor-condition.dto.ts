@@ -16,4 +16,7 @@ export class InvestorCondDto {
     @IsString()
     @IsOptional()
     searchQuery: string;
+
+    @IsOptional()
+    status: any;
 }

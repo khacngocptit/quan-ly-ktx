@@ -15,7 +15,7 @@ export class BidController {
 
     @Get("cron/manual")
     async test() {
-        await this.bidService._cronV2();
+        this.bidService._cronV2();
     }
 
     @Get("pageable")
