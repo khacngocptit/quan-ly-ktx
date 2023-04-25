@@ -72,7 +72,6 @@ export class BidService implements OnApplicationBootstrap {
             delete condition.searchQuery;
             Object.assign(condition, searchCondition);
         }
-        console.log(JSON.stringify(condition, null, 2));
         return this.bidRepo.getPaging(condition, option);
     }
 
@@ -396,7 +395,7 @@ export class BidService implements OnApplicationBootstrap {
 
     async sendNotif(bidId: string, type: "cập nhật" | "tạo mới") {
         const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
-        const realBid = await this.bidModel.findOne({ bidId });
+        const realBid = await this.bidModel.findOne({ bidId }).lean();
         this.notifService.createNotifAll(
             {
                 title: `Thông báo gói thầu ${realBid["bidName"]} của chủ đầu tư ${realBid["investorName"]}`,
