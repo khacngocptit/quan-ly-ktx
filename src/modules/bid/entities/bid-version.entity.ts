@@ -32,6 +32,10 @@ export class BidVersion {
     @IsBoolean()
     @Prop()
     favorite: boolean;
+
+    @IsBoolean()
+    @Prop()
+    version: boolean;
 }
 
 export const BidVersionSchema = SchemaFactory.createForClass(BidVersion);

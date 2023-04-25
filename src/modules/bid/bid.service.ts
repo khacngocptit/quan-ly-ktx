@@ -61,15 +61,18 @@ export class BidService implements OnApplicationBootstrap {
                 $or: [
                     {
                         bidName: { $regex: condition.searchQuery, $options: "i" },
+                    },
+                    {
                         procuringEntityCode: { $regex: condition.searchQuery, $options: "i" },
                     },
                 ],
             };
-            if (condition.favorite !== undefined) {
-                Object.assign(searchCondition, { favorite: condition.favorite });
-            }
-            return this.bidRepo.getPaging(searchCondition, option);
+            delete condition.bidName;
+            delete condition.procuringEntityCode;
+            delete condition.searchQuery;
+            Object.assign(condition, searchCondition);
         }
+        console.log(JSON.stringify(condition, null, 2));
         return this.bidRepo.getPaging(condition, option);
     }
 
@@ -255,10 +258,11 @@ export class BidService implements OnApplicationBootstrap {
             const versionBulk = this.bidVersionModel.collection.initializeUnorderedBulkOp();
             const favoriteInvestors = await this.investorModel
                 .find({
-                    // favorite: true
+                    favorite: true,
                 })
                 .select("orgCode favorite")
-                .lean();
+                .lean()
+                .then((res) => res.slice(0, 10));
             const investorCodes = favoriteInvestors.map((x) => x["orgCode"]);
             const mapInvestorFavorite = favoriteInvestors.reduce(
                 (map, i) => Object.assign(map, { [i.orgCode]: i.favorite }),
@@ -327,14 +331,16 @@ export class BidService implements OnApplicationBootstrap {
                         pageNumber += 1;
                     } while (last !== true);
                 },
-                { concurrency: 1 },
+                { concurrency: 4 },
             );
+            console.log(bulk.length, versionBulk.length);
             if (bulk.length > 0) {
                 await bulk.execute();
             }
             if (versionBulk.length > 0) {
                 await versionBulk.execute();
             }
+            console.log("DONE");
             await this.bidModel.deleteMany({ version: { $ne: version } });
             await this.bidVersionModel.deleteMany({ version: { $ne: version } });
             const notifyNeeded = await this.bidVersionModel.find({ favorite: true, notifyNeeded: true });
@@ -386,6 +392,26 @@ export class BidService implements OnApplicationBootstrap {
         if (process.env.NODE_APP_INSTANCE === "0") {
             this._cronV2();
         }
+    }
+
+    async sendNotif(bidId: string, type: "cập nhật" | "tạo mới") {
+        const user = await this.userModel.findOne({ systemRole: SystemRole.ADMIN });
+        const realBid = await this.bidModel.findOne({ bidId });
+        this.notifService.createNotifAll(
+            {
+                title: `Thông báo gói thầu ${realBid["bidName"]} của chủ đầu tư ${realBid["investorName"]}`,
+                description: "Thông báo về gói thầu",
+                htmlContent:
+                    `Thông báo gói thầu ${realBid["bidName"]} của chủ đầu tư ${realBid["investorName"]} đã được ` + type,
+                content: `Thông báo gói thầu ${realBid["bidName"]} của chủ đầu tư ${realBid["investorName"]} đã được ` + type,
+                info: {
+                    type: type === "tạo mới" ? "TAO_MOI" : "CAP_NHAT",
+                    notifyNo: realBid["notifyNo"],
+                    _id: realBid._id,
+                },
+            },
+            user,
+        );
     }
 
     async getLink(_id: string) {

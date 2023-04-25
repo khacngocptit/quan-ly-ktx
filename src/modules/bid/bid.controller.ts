@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { ApiCondition, ApiPageableQuery, FetchPageableQuery, QueryCondition } from "src/common/decorator/api.decorator";
 import { Authorization } from "src/common/decorator/auth.decorator";
 import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
@@ -36,6 +36,12 @@ export class BidController {
     async getInfoByVersionId(@Param("versionId") versionId: string) {
         const data = await this.bidService.getBidInfoByVersionId(versionId);
         return ResponseDto.create(data);
+    }
+
+    @Post("notif/:bidId")
+    @ApiQuery({ name: "type", type: String, enum: ["tạo mới", "cập nhật"] })
+    async notif(@Param("bidId") bidId: string, @Query("type") type: "tạo mới" | "cập nhật") {
+        const data = await this.bidService.sendNotif(bidId, type);
     }
 
     @Get(":_id")

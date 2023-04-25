@@ -64,9 +64,10 @@ export class InvestorService implements OnApplicationBootstrap {
                     },
                 ],
             };
-            if (condition.favorite !== undefined) {
-                Object.assign(searchCondition, { favorite: condition.favorite });
-            }
+            delete condition.searchQuery;
+            delete condition.orgCode;
+            delete condition.orgFullname;
+            Object.assign(condition, searchCondition);
             return this.investorRepo.getPaging(searchCondition, option);
         }
         return this.investorRepo.getPaging(condition, option);
