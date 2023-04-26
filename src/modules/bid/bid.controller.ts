@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { ApiCondition, ApiPageableQuery, FetchPageableQuery, QueryCondition } from "src/common/decorator/api.decorator";
 import { Authorization } from "src/common/decorator/auth.decorator";
@@ -42,6 +42,12 @@ export class BidController {
     @ApiQuery({ name: "type", type: String, enum: ["tạo mới", "cập nhật"] })
     async notif(@Param("bidId") bidId: string, @Query("type") type: "tạo mới" | "cập nhật") {
         const data = await this.bidService.sendNotif(bidId, type);
+    }
+
+    @Put("all/unsubscribe")
+    async unsubAll() {
+        const data = await this.bidService.unsubscribeAll();
+        return ResponseDto.create(data);
     }
 
     @Get(":_id")

@@ -1,24 +1,24 @@
 import { BadRequestException, Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { DB_BID, DB_BID_VERSION, DB_INVESTOR, DB_LOG, DB_SETTING, DB_USER } from "../repository/db-collection";
-import { Model } from "mongoose";
-import { BidDoc } from "./entities/bid.entity";
-import { BidCondDto } from "./dto/condition/bid-condition.dto";
-import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
-import { BidRepository } from "./repository/bid.repository";
-import { SettingDocument } from "../setting/entities/setting.entity";
-import * as https from "https";
-import axios from "axios";
-import { BID_DETAILED, BID_PAGE_API, BID_VERSION_LIST } from "./common/bid.constant";
-import { SettingKey } from "../setting/common/setting.constant";
-import * as bluebird from "bluebird";
-import { InvestorDoc } from "../investor/entities/investor.entity";
 import { Cron } from "@nestjs/schedule";
-import { NotificationService } from "../notification/service/notification.service";
-import { UserDocument } from "../user/entities/user.entity";
-import { SystemRole } from "../user/common/user.constant";
-import { BidVersionDoc } from "./entities/bid-version.entity";
+import axios from "axios";
+import * as bluebird from "bluebird";
+import * as https from "https";
+import { Model } from "mongoose";
+import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
+import { InvestorDoc } from "../investor/entities/investor.entity";
 import { LogDocument } from "../log/entities/log.entity";
+import { NotificationService } from "../notification/service/notification.service";
+import { DB_BID, DB_BID_VERSION, DB_INVESTOR, DB_LOG, DB_SETTING, DB_USER } from "../repository/db-collection";
+import { SettingKey } from "../setting/common/setting.constant";
+import { SettingDocument } from "../setting/entities/setting.entity";
+import { SystemRole } from "../user/common/user.constant";
+import { UserDocument } from "../user/entities/user.entity";
+import { BID_DETAILED, BID_PAGE_API, BID_VERSION_LIST } from "./common/bid.constant";
+import { BidCondDto } from "./dto/condition/bid-condition.dto";
+import { BidVersionDoc } from "./entities/bid-version.entity";
+import { BidDoc } from "./entities/bid.entity";
+import { BidRepository } from "./repository/bid.repository";
 
 @Injectable()
 export class BidService implements OnApplicationBootstrap {
@@ -302,24 +302,24 @@ export class BidService implements OnApplicationBootstrap {
                             },
                             { httpsAgent: this.httpsAgent },
                         );
-                        data.data.page.content.map((i) => {
-                            bulk.find({ bidId: i.bidId })
+                        data.data.page.content.map((inv) => {
+                            bulk.find({ bidId: inv.bidId })
                                 .upsert()
                                 .updateOne({
-                                    $set: { version, ...i },
+                                    $set: { version, ...inv },
                                 });
                             versionBulk
                                 .find({
-                                    bidId: i.bidId,
-                                    notifyVersion: { $ne: i.notifyVersion },
+                                    bidId: inv.bidId,
+                                    notifyVersion: { $ne: inv.notifyVersion },
                                 })
                                 .upsert()
                                 .updateOne({
                                     $set: {
-                                        bidName: i.bidName,
-                                        notifyNo: i.notifyNo,
-                                        investorName: i.investorName,
-                                        notifyVersion: i.notifyVersion,
+                                        bidName: inv.bidName,
+                                        notifyNo: inv.notifyNo,
+                                        investorName: inv.investorName,
+                                        notifyVersion: inv.notifyVersion,
                                         favorite: mapInvestorFavorite[investorCode],
                                         notifyNeeded: true,
                                         version,
@@ -416,5 +416,14 @@ export class BidService implements OnApplicationBootstrap {
     async getLink(_id: string) {
         const bid = await this.bidModel.findById(_id).lean();
         return `https://muasamcong.mpi.gov.vn/web/guest/contractor-selection?p_p_id=egpportalcontractorselectionv2_WAR_egpportalcontractorselectionv2&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_egpportalcontractorselectionv2_WAR_egpportalcontractorselectionv2_render=detail&type=es-notify-contractor&stepCode=${bid["stepCode"]}&id=${bid["id"]}&notifyId=${bid["notifyId"]}&inputResultId=undefined&bidOpenId=undefined&techReqId=undefined&bidPreNotifyResultId=undefined&bidPreOpenId=undefined&processApply=${bid["processApply"]}&bidMode=${bid["bidMode"]}&notifyNo=${bid["notifyNo"]}&planNo=${bid["planNo"]}&pno=undefined`;
+    }
+
+    async unsubscribeAll() {
+        return this.bidModel.updateMany(
+            {},
+            {
+                $set: { favorite: false },
+            },
+        );
     }
 }

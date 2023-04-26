@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ApiCondition, ApiPageableQuery, FetchPageableQuery, QueryCondition } from "src/common/decorator/api.decorator";
 import { Authorization } from "src/common/decorator/auth.decorator";
@@ -26,6 +26,18 @@ export class InvestorController {
         return ResponseDto.create(data);
     }
 
+    @Put("all/unsubscribe")
+    async unsubAll() {
+        const data = await this.investorService.unsubscribeAll();
+        return ResponseDto.create(data);
+    }
+
+    @Get("info/:orgCode")
+    async getInfoByOrgCode(@Param("orgCode") orgCode: string) {
+        const data = await this.investorService.getInfoByOrgCode(orgCode);
+        return ResponseDto.create(data);
+    }
+
     @Get(":_id")
     async getById(@Param("_id") _id: string) {
         const data = await this.investorService.getById(_id);
@@ -41,12 +53,6 @@ export class InvestorController {
     @Get(":_id/unsubscribe")
     async unsubById(@Param("_id") _id: string) {
         const data = await this.investorService.setFavorite(_id, false);
-        return ResponseDto.create(data);
-    }
-
-    @Get("info/:orgCode")
-    async getInfoByOrgCode(@Param("orgCode") orgCode: string) {
-        const data = await this.investorService.getInfoByOrgCode(orgCode);
         return ResponseDto.create(data);
     }
 }

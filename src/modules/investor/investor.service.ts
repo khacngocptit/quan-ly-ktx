@@ -181,4 +181,15 @@ export class InvestorService implements OnApplicationBootstrap {
             this._cron();
         }
     }
+
+    async unsubscribeAll() {
+        return this.investorModel.updateMany(
+            {},
+            {
+                $set: {
+                    favorite: false,
+                },
+            },
+        );
+    }
 }
