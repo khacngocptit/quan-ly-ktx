@@ -22,4 +22,7 @@ export class BidCondDto {
 
     @IsOptional()
     publicDate: any;
+
+    @IsOptional()
+    planNo: any;
 }
