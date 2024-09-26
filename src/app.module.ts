@@ -14,10 +14,15 @@ import { OneSignalModule } from "./modules/one-signal/one-signal.module";
 import { RepositoryModule } from "./modules/repository/repository.module";
 import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
-import { InvestorModule } from "./modules/investor/investor.module";
-import { BidModule } from "./modules/bid/bid.module";
-import { CategoryModule } from "./modules/category/category.module";
-import { LogModule } from "./modules/log/log.module";
+import { KhoaSinhVienModule } from "./modules/khoa-sinh-vien/khoa-sinh-vien.module";
+import { PhongKtxModule } from "./modules/phong-ktx/phong-ktx.module";
+import { DotDangKyKtxModule } from "./modules/dot-dang-ky-ktx/dot-dang-ky-ktx.module";
+import { KhachVaoRaKtxModule } from "./modules/khach-vao-ra-ktx/khach-vao-ra-ktx.module";
+import { HoaDonModule } from "./modules/hoa-don/hoa-don.module";
+import { DichVuKtxModule } from "./modules/dich-vu-ktx/dich-vu-ktx.module";
+import { DangKyGuiXeService } from "./modules/dang-ky-gui-xe/dang-ky-gui-xe.service";
+import { DangKyGuiXeModule } from "./modules/dang-ky-gui-xe/dang-ky-gui-xe.module";
+import { GuiXeModule } from "./modules/gui-xe/gui-xe.module";
 
 @Module({
     imports: [
@@ -39,10 +44,14 @@ import { LogModule } from "./modules/log/log.module";
         DeviceDataModule,
         NotificationModule,
         OneSignalModule,
-        InvestorModule,
-        BidModule,
-        CategoryModule,
-        LogModule,
+        KhoaSinhVienModule,
+        PhongKtxModule,
+        DotDangKyKtxModule,
+        KhachVaoRaKtxModule,
+        HoaDonModule,
+        DichVuKtxModule,
+        DangKyGuiXeModule,
+        GuiXeModule,
     ],
     providers: [
         {
@@ -53,6 +62,7 @@ import { LogModule } from "./modules/log/log.module";
             provide: APP_INTERCEPTOR,
             useClass: TransformResponseInterceptor,
         },
+
     ],
 })
 export class AppModule {}

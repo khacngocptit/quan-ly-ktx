@@ -9,10 +9,6 @@ import { TopicSchema } from "../notification/entities/topic/topic.entity";
 import { SettingSchema } from "../setting/entities/setting.entity";
 import { UserSchema } from "../user/entities/user.entity";
 import * as db from "./db-collection";
-import { InvestorSchema } from "../investor/entities/investor.entity";
-import { BidSchema } from "../bid/entities/bid.entity";
-import { BidVersionSchema } from "../bid/entities/bid-version.entity";
-import { LogSchema } from "../log/entities/log.entity";
 
 @Global()
 @Module({
@@ -26,11 +22,6 @@ import { LogSchema } from "../log/entities/log.entity";
             { name: db.DB_TOPIC, schema: TopicSchema },
             { name: db.DB_JOIN_TOPIC, schema: JoinTopicSchema },
             { name: db.DB_NOTIFY_READ, schema: NotifyReadSchema },
-
-            { name: db.DB_INVESTOR, schema: InvestorSchema },
-            { name: db.DB_BID, schema: BidSchema },
-            { name: db.DB_BID_VERSION, schema: BidVersionSchema },
-            { name: db.DB_LOG, schema: LogSchema },
         ]),
     ],
     providers: [FileManagerProvider],
