@@ -2,7 +2,7 @@ import { AccessibleFieldsDocument } from "@casl/mongoose";
 import { Prop, raw, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as bcrypt from "bcryptjs";
 import { Type } from "class-transformer";
-import { IsEmail, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Document } from "mongoose";
 import { Profile, ProfileSchema } from "../../profile/entities/profile.entity";
 import { DB_PROFILE, DB_USER } from "../../repository/db-collection";
@@ -56,11 +56,29 @@ export class User {
     @Prop({ type: String, enum: Object.values(SystemRole), required: true })
     systemRole: SystemRole;
 
-    @ValidateNested()
-    @Type(() => Profile)
-    @IsOptional()
-    @Prop(raw({ type: ProfileSchema }))
-    profile: Profile;
+    @IsString()
+    @Prop()
+    hoDem: string;
+
+    @IsString()
+    @Prop()
+    ten: string;
+
+    @IsString()
+    @Prop()
+    soCMND: string;
+
+    @IsDateString()
+    @Prop()
+    ngaySinh: Date;
+
+    @IsString()
+    @Prop()
+    lop: string;
+
+    @IsString()
+    @Prop()
+    queQuan: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

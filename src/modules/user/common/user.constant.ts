@@ -2,6 +2,8 @@ export enum SystemRole {
     ADMIN = "Admin",
     USER = "User",
     GUEST = "Guest",
+    CAN_BO = "CanBo",
+    SINH_VIEN = "SinhVien",
 }
 
 export type SystemRoleProp = {

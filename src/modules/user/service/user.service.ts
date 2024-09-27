@@ -45,12 +45,6 @@ export class UserService implements OnModuleInit {
                 password: this.configService.get<string>("project.defaultAdminPassword"),
                 systemRole: SystemRole.ADMIN,
                 email: "administrator@project.com",
-                profile: {
-                    firstname: "Admin",
-                    lastname: "Manager",
-                    dateOfBirth: new Date(),
-                    gender: Gender.MALE,
-                },
             } as User);
         } else {
             this.logger.verbose("Administrator initialized");

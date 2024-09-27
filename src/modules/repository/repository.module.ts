@@ -9,6 +9,7 @@ import { TopicSchema } from "../notification/entities/topic/topic.entity";
 import { SettingSchema } from "../setting/entities/setting.entity";
 import { UserSchema } from "../user/entities/user.entity";
 import * as db from "./db-collection";
+import { PhongKtxSchema } from "../phong-ktx/phong-ktx.entity";
 
 @Global()
 @Module({
@@ -22,6 +23,7 @@ import * as db from "./db-collection";
             { name: db.DB_TOPIC, schema: TopicSchema },
             { name: db.DB_JOIN_TOPIC, schema: JoinTopicSchema },
             { name: db.DB_NOTIFY_READ, schema: NotifyReadSchema },
+            { name: db.DB_PHONG, schema: PhongKtxSchema },
         ]),
     ],
     providers: [FileManagerProvider],

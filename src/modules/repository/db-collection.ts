@@ -9,7 +9,10 @@ export const DB_NOTIFY_READ = "NotifyRead";
 export const DB_JOIN_TOPIC = "JoinTopic";
 export const DB_TOPIC = "Topic";
 
-export const DB_INVESTOR = "Investor";
-export const DB_BID = "Bid";
-export const DB_BID_VERSION = "BidVersion";
-export const DB_LOG = "Log";
+export const DB_KHOA_SINH_VIEN = "KhoaSinhVien";
+export const DB_PHONG = "Phong";
+export const DB_KHACH_VAO_RA_KTX = "KhachVaoRaKtx";
+export const DB_DANG_KY_KTX = "DangKyKtx";
+export const DB_HOA_DON = "HoaDon";
+export const DB_DANG_KY_GUI_XE = "DangKyGuiXe";
+export const DB_GUI_XE = "GuiXe";
