@@ -1,15 +1,17 @@
 import { Global, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DeviceDataSchema } from "../device-data/entities/device-data.entity";
+import { DichVuKtxSchema } from "../dich-vu-ktx/dich-vu-ktx.entity";
 import { FileManagerProvider } from "../file-manager/entities/file-manager.entity";
+import { KhachVaoRaKtxSchema } from "../khach-vao-ra-ktx/khach-vao-ra-ktx.entity";
 import { JoinTopicSchema } from "../notification/entities/join-topic.entity";
 import { NotificationSchema } from "../notification/entities/notification.entity";
 import { NotifyReadSchema } from "../notification/entities/notify-read.entity";
 import { TopicSchema } from "../notification/entities/topic/topic.entity";
+import { PhongKtxSchema } from "../phong-ktx/phong-ktx.entity";
 import { SettingSchema } from "../setting/entities/setting.entity";
 import { UserSchema } from "../user/entities/user.entity";
 import * as db from "./db-collection";
-import { PhongKtxSchema } from "../phong-ktx/phong-ktx.entity";
 
 @Global()
 @Module({
@@ -24,6 +26,8 @@ import { PhongKtxSchema } from "../phong-ktx/phong-ktx.entity";
             { name: db.DB_JOIN_TOPIC, schema: JoinTopicSchema },
             { name: db.DB_NOTIFY_READ, schema: NotifyReadSchema },
             { name: db.DB_PHONG, schema: PhongKtxSchema },
+            { name: db.DB_KHACH_VAO_RA_KTX, schema: KhachVaoRaKtxSchema },
+            { name: db.DB_DICH_VU_KTX, schema: DichVuKtxSchema },
         ]),
     ],
     providers: [FileManagerProvider],

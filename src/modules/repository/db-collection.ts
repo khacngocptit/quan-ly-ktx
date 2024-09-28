@@ -16,3 +16,4 @@ export const DB_DANG_KY_KTX = "DangKyKtx";
 export const DB_HOA_DON = "HoaDon";
 export const DB_DANG_KY_GUI_XE = "DangKyGuiXe";
 export const DB_GUI_XE = "GuiXe";
+export const DB_DICH_VU_KTX = "DichVuKtx";
