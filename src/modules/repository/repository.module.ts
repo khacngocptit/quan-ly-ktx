@@ -12,6 +12,12 @@ import { PhongKtxSchema } from "../phong-ktx/phong-ktx.entity";
 import { SettingSchema } from "../setting/entities/setting.entity";
 import { UserSchema } from "../user/entities/user.entity";
 import * as db from "./db-collection";
+import { QuanLyXeSchema } from "../quan-ly-xe/quan-ly-xe.entity";
+import { DangKyPhongSchema } from "../dang-ky-phong/dang-ky-phong.entity";
+import { DangKyVeXeSchema } from "../dang-ky-ve-xe/dang-ky-ve-xe.entity";
+import { DangKySuDungDichVuSchema } from "../dang-ky-su-dung-dich-vu/dang-ky-su-dung-dich-vu.entity";
+import { LayGuiXeSchema } from "../lay-gui-xe/lay-gui-xe.entity";
+import { HoaDonSchema } from "../hoa-don/hoa-don.entity";
 
 @Global()
 @Module({
@@ -28,6 +34,14 @@ import * as db from "./db-collection";
             { name: db.DB_PHONG, schema: PhongKtxSchema },
             { name: db.DB_KHACH_VAO_RA_KTX, schema: KhachVaoRaKtxSchema },
             { name: db.DB_DICH_VU_KTX, schema: DichVuKtxSchema },
+            { name: db.DB_QUAN_LY_XE, schema: QuanLyXeSchema },
+            { name: db.DB_DANG_KY_KTX, schema: DangKyPhongSchema },
+            { name: db.DB_DANG_KY_VE_XE, schema: DangKyVeXeSchema },
+            { name: db.DB_DANG_KY_DICH_VU, schema: DangKySuDungDichVuSchema },
+            { name: db.DB_DANG_KY_THUE_PHONG, schema: DangKyPhongSchema },
+            { name: db.DB_DANG_KY_VE_XE, schema: DangKyVeXeSchema },
+            { name: db.DB_LAY_GUI_XE, schema: LayGuiXeSchema },
+            { name: db.DB_HOA_DON, schema: HoaDonSchema },
         ]),
     ],
     providers: [FileManagerProvider],

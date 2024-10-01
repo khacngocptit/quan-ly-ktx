@@ -1,36 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ApiCondition, ApiPageableQuery, QueryCondition, FetchPageableQuery } from "src/common/decorator/api.decorator";
-import { Authorization } from "src/common/decorator/auth.decorator";
 import { ResponseDto } from "src/common/dto/response/response.dto";
 import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
-import { CreateHoaDonDto } from "./dto/create-hoa-don.dto";
-import { HoaDonConditionDto } from "./dto/hoa-don-condition.dto";
-import { HoaDonService } from "./hoa-don.service";
+import { CreateQuanLyXeDto } from "./dto/create-quan-ly-xe.dto";
+import { QuanLyXeConditionDto } from "./dto/quan-ly-xe-condition.dto";
+import { QuanLyXeService } from "./quan-ly-xe.service";
 
-@Controller("hoa-don")
-    @ApiTags("Hoa don")
-@Authorization()
-export class HoaDonController {
-    constructor(private readonly hoaDonService: HoaDonService) { }
+@Controller("quan-ly-xe")
+@ApiTags("Quan ly xe")
+export class QuanLyXeController {
+    constructor(private readonly quanLyXeService: QuanLyXeService) { }
 
     @Get("page")
     @ApiCondition()
     @ApiPageableQuery()
     async getPage(
-        @QueryCondition(HoaDonConditionDto) condition: any,
+        @QueryCondition(QuanLyXeConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.hoaDonService.getPaging(condition, option);
+        const data = await this.quanLyXeService.getPaging(condition, option);
         return ResponseDto.create(data);
     }
 
     @Get("many")
     @ApiCondition()
     async getMany(
-        @QueryCondition(HoaDonConditionDto) condition: any,
+        @QueryCondition(QuanLyXeConditionDto) condition: any,
     ) {
-        const data = await this.hoaDonService.get(condition);
+        const data = await this.quanLyXeService.get(condition);
         return ResponseDto.create(data);
     }
 
@@ -38,24 +36,24 @@ export class HoaDonController {
     async getById(
         @Param("id") id: string,
     ) {
-        const data = await this.hoaDonService.getOne({ _id: id });
+        const data = await this.quanLyXeService.getOne({ _id: id });
         return ResponseDto.create(data);
     }
 
     @Post()
     async create(
-        @Body() body: CreateHoaDonDto
+        @Body() body: CreateQuanLyXeDto
     ) {
-        const data = await this.hoaDonService.create(body);
+        const data = await this.quanLyXeService.create(body);
         return data;
     }
 
     @Put(":id")
     async updateById(
         @Param("id") id: string,
-        @Body() body: CreateHoaDonDto
+        @Body() body: CreateQuanLyXeDto
     ) {
-        const data = await this.hoaDonService.updateById(id, body);
+        const data = await this.quanLyXeService.updateById(id, body);
         return data;
     }
 
@@ -63,7 +61,8 @@ export class HoaDonController {
     async deleteById(
         @Param("id") id: string,
     ) {
-        const data = await this.hoaDonService.deleteById(id);
+        const data = await this.quanLyXeService.deleteById(id);
         return data;
     }
 }
+

@@ -4,33 +4,33 @@ import { ApiCondition, ApiPageableQuery, QueryCondition, FetchPageableQuery } fr
 import { Authorization } from "src/common/decorator/auth.decorator";
 import { ResponseDto } from "src/common/dto/response/response.dto";
 import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
-import { CreateHoaDonDto } from "./dto/create-hoa-don.dto";
-import { HoaDonConditionDto } from "./dto/hoa-don-condition.dto";
-import { HoaDonService } from "./hoa-don.service";
+import { DangKyVeXeService } from "./dang-ky-ve-xe.service";
+import { CreateDangKyVeXeDto } from "./dto/create-dang-ky-ve-xe.dto";
+import { DangKyVeXeConditionDto } from "./dto/dang-ky-ve-xe-condition.dto";
 
-@Controller("hoa-don")
-    @ApiTags("Hoa don")
+@Controller("dang-ky-ve-xe")
+@ApiTags("Dang ky ve xe")
 @Authorization()
-export class HoaDonController {
-    constructor(private readonly hoaDonService: HoaDonService) { }
+export class DangKyVeXeController {
+    constructor(private readonly dangKyVeXeService: DangKyVeXeService) { }
 
     @Get("page")
     @ApiCondition()
     @ApiPageableQuery()
     async getPage(
-        @QueryCondition(HoaDonConditionDto) condition: any,
+        @QueryCondition(DangKyVeXeConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.hoaDonService.getPaging(condition, option);
+        const data = await this.dangKyVeXeService.getPaging(condition, option);
         return ResponseDto.create(data);
     }
 
     @Get("many")
     @ApiCondition()
     async getMany(
-        @QueryCondition(HoaDonConditionDto) condition: any,
+        @QueryCondition(DangKyVeXeConditionDto) condition: any,
     ) {
-        const data = await this.hoaDonService.get(condition);
+        const data = await this.dangKyVeXeService.get(condition);
         return ResponseDto.create(data);
     }
 
@@ -38,24 +38,24 @@ export class HoaDonController {
     async getById(
         @Param("id") id: string,
     ) {
-        const data = await this.hoaDonService.getOne({ _id: id });
+        const data = await this.dangKyVeXeService.getOne({ _id: id });
         return ResponseDto.create(data);
     }
 
     @Post()
     async create(
-        @Body() body: CreateHoaDonDto
+        @Body() body: CreateDangKyVeXeDto
     ) {
-        const data = await this.hoaDonService.create(body);
+        const data = await this.dangKyVeXeService.create(body);
         return data;
     }
 
     @Put(":id")
     async updateById(
         @Param("id") id: string,
-        @Body() body: CreateHoaDonDto
+        @Body() body: CreateDangKyVeXeDto
     ) {
-        const data = await this.hoaDonService.updateById(id, body);
+        const data = await this.dangKyVeXeService.updateById(id, body);
         return data;
     }
 
@@ -63,7 +63,9 @@ export class HoaDonController {
     async deleteById(
         @Param("id") id: string,
     ) {
-        const data = await this.hoaDonService.deleteById(id);
+        const data = await this.dangKyVeXeService.deleteById(id);
         return data;
     }
+
 }
+

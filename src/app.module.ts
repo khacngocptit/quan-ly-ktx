@@ -21,7 +21,11 @@ import { PhongKtxModule } from "./modules/phong-ktx/phong-ktx.module";
 import { RepositoryModule } from "./modules/repository/repository.module";
 import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
-import { SinhVienDangKyDichVuModule } from './modules/sinh-vien-dang-ky-dich-vu/sinh-vien-dang-ky-dich-vu.module';
+import { QuanLyXeModule } from "./modules/quan-ly-xe/quan-ly-xe.module";
+import { DangKyPhongModule } from "./modules/dang-ky-phong/dang-ky-phong.module";
+import { DangKyVeXeModule } from "./modules/dang-ky-ve-xe/dang-ky-ve-xe.module";
+import { DangKySuDungDichVuModule } from "./modules/dang-ky-su-dung-dich-vu/dang-ky-su-dung-dich-vu.module";
+import { LayGuiXeModule } from "./modules/lay-gui-xe/lay-gui-xe.module";
 
 @Module({
     imports: [
@@ -50,7 +54,11 @@ import { SinhVienDangKyDichVuModule } from './modules/sinh-vien-dang-ky-dich-vu/
         DichVuKtxModule,
         DangKyGuiXeModule,
         GuiXeModule,
-        SinhVienDangKyDichVuModule,
+        QuanLyXeModule,
+        DangKyPhongModule,
+        DangKyVeXeModule,
+        DangKySuDungDichVuModule,
+        LayGuiXeModule,
     ],
     providers: [
         {

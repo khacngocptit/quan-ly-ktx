@@ -19,7 +19,7 @@ export class KhachVaoRaKtx {
     ngaySinh: Date;
 
     @IsString()
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId })
     idSinhVien: string;
 
     sinhVien?: User;
