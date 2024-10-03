@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { DB_DANG_KY_DICH_VU, DB_DICH_VU_KTX, DB_HOA_DON } from "../repository/db-collection";
+import { DB_DANG_KY_DICH_VU, DB_DICH_VU_KTX, DB_HOA_DON, DB_USER } from "../repository/db-collection";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MongoRepository } from "../repository/mongo-repository";
@@ -27,7 +27,10 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
         if (!dichVu) {
             throw new NotFoundException("Không có thông tin dịch vụ đăng ký");
         }
-        const result = await this.dangKyDichVuModel.create(doc);
+        const result = await this.dangKyDichVuModel.create({
+            ...doc,
+            donGia: dichVu.donGia,
+        });
         const hoaDon: Partial<HoaDon> = {
             donGia: dichVu.donGia,
             idSinhVien: result.idSinhVien,
@@ -39,6 +42,84 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
         };
 
         await this.hoaDonModel.create(hoaDon);
+        return result;
+    }
+
+    async thongKeSuDungDichVu(
+        startDate: string,
+        endDate: string
+    ) {
+        const data = await this.dangKyDichVuModel.aggregate([
+            {
+                $lookup: {
+                    from: DB_USER,
+                    localField: "idSinhVien",
+                    foreignField: "_id",
+                    as: "sinhVien",
+                },
+            },
+            {
+                $lookup: {
+                    from: DB_DICH_VU_KTX,
+                    localField: "idDichVu",
+                    foreignField: "_id",
+                    as: "dichVu",
+                },
+            },
+            {
+                $match: {
+                    thoiGianBatDauSuDung: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        idSinhVien: "$idSinhVien",
+                        idDichVu: "$idDichVu",
+                    },
+                    tongTien: { $sum: "$donGia" },
+                    sinhVienInfo: { $first: "$sinhVien" },
+                    dichVuInfo: { $first: "$dichVu" },
+                },
+            },
+
+        ]);
+        return data;
+    }
+
+    async thongKeDichVu(
+
+    ) {
+        const result = await this.dangKyDichVuModel.aggregate([
+            {
+                $lookup: {
+                    from: DB_DICH_VU_KTX,
+                    localField: "idDichVu",
+                    foreignField: "_id",
+                    as: "dichVu",
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        idDichVu: "$idDichVu",
+                        month: "$thang",
+                        year: "$nam",
+                    },
+                    tongDoanhThu: { $sum: "$donGia" },
+                    tenDichVu: { $first: "$dichVu.ten" },
+                },
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                    "_id.month": 1,
+                },
+            },
+        ]);
         return result;
     }
 }

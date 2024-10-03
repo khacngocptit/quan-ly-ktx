@@ -40,6 +40,23 @@ export class DangKySuDungDichVuController {
         return ResponseDto.create(data);
     }
 
+    @Get("thong-ke/from/:fromDate/to/:toDate")
+    async getThongKeKhac(
+        @Param("fromDate") fromDate: string,
+        @Param("toDate") toDate: string,
+    ) {
+        const data = await this.dangKySuDungDichVuService.thongKeSuDungDichVu(fromDate, toDate);
+        return ResponseDto.create(data);
+    }
+
+    @Get("thong-ke/dich-vu")
+    async thongKeDichVu(
+
+    ) {
+        const data = await this.dangKySuDungDichVuService.thongKeDichVu();
+        return ResponseDto.create(data);
+    }
+
     @Post()
     async create(
         @Body() body: CreateDangKySuDungDichVuDto

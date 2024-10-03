@@ -14,6 +14,10 @@ export class KhachVaoRaKtx {
     @Prop()
     cmtCccd: string;
 
+    @IsString()
+    @Prop()
+    hoTen: string;
+
     @IsDateString()
     @Prop()
     ngaySinh: Date;

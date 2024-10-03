@@ -37,6 +37,9 @@ export class DangKySuDungDichVu {
 
     dichVu?: DichVuKtx;
 
+    @Prop()
+    donGia: number;
+
     @IsDateString()
     @Prop()
     thoiGianBatDauSuDung: Date;
