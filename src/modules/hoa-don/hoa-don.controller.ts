@@ -11,7 +11,7 @@ import { NextFunction, Response } from "express";
 
 @Controller("hoa-don")
     @ApiTags("Hoa don")
-@Authorization()
+// @Authorization()
 export class HoaDonController {
     constructor(private readonly hoaDonService: HoaDonService) { }
 

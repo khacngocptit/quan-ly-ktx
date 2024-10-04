@@ -10,7 +10,7 @@ import { LayGuiXeService } from "./lay-gui-xe.service";
 
 @Controller("lay-gui-xe")
     @ApiTags("Lay gui xe")
-@Authorization()
+// @Authorization()
 export class LayGuiXeController {
     constructor(private readonly layGuiXeService: LayGuiXeService) { }
 

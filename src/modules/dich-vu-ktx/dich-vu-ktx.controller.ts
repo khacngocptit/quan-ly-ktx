@@ -7,7 +7,7 @@ import { DichVuKtxService } from "./dich-vu-ktx.service";
 import { CreateDichVuKtxDto } from "./dto/create-dich-vu-ktx.dto";
 import { DichVuKtxConditionDto } from "./dto/dich-vu-ktx-condition.dto";
 
-@Controller("dich-vu-ktx")
+@Controller("dich-vu")
 @ApiTags("Dich vu KTX")
 export class DichVuKtxController {
     constructor(private readonly dichVuKtxService: DichVuKtxService) { }

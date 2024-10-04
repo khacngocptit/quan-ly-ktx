@@ -19,6 +19,7 @@ import { UpdateUserDto } from "../dto/update-user.dto";
 import { UserAuthorizedDocument } from "../dto/user-authorized.dto";
 import { UserPageableDto } from "../dto/user-pageable.dto";
 import { User, UserDocument } from "../entities/user.entity";
+import { UserCondition } from "../dto/user-condition.dto";
 @Injectable()
 export class UserService implements OnModuleInit {
     private readonly logger: Logger = new Logger(UserService.name);
@@ -68,6 +69,10 @@ export class UserService implements OnModuleInit {
         return Promise.all([total, result]).then((p) => PageableDto.create(option, p[0], p[1]));
     }
 
+    async findAll(condition: UserCondition) {
+        return this.userModel.find(condition);
+    }
+
     userFindAll(user: UserDocument) {
         return this.userModel
             .accessibleBy(this.userAbilityFactory.createForUser(user), "read")
@@ -80,18 +85,11 @@ export class UserService implements OnModuleInit {
     }
 
     async userUpdateById(user: UserDocument, id: string, updateUserDto: UpdateUserDto) {
-        const updateUser = await this.userModel
-            .accessibleBy(this.userAbilityFactory.createForUser(user), "update")
-            .findOne({ _id: id });
-        if (updateUser) {
-            Object.assign(updateUser, updateUserDto);
-            return updateUser.save();
-        }
-        return null;
+        return this.userModel.findByIdAndUpdate(id, updateUserDto);
     }
 
-    userDeleteById(user: UserDocument, id: string) {
-        return this.userModel.accessibleBy(this.userAbilityFactory.createForUser(user), "delete").findOneAndRemove({ _id: id });
+    async userDeleteById(user: UserDocument, id: string) {
+        return this.userModel.findByIdAndDelete(id);
     }
 
     async changePassword(user: UserAuthorizedDocument, changePassword: ChangePasswordDto): Promise<LoginResultDto> {

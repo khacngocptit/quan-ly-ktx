@@ -10,7 +10,7 @@ import { DangKyVeXeConditionDto } from "./dto/dang-ky-ve-xe-condition.dto";
 
 @Controller("dang-ky-ve-xe")
 @ApiTags("Dang ky ve xe")
-@Authorization()
+// @Authorization()
 export class DangKyVeXeController {
     constructor(private readonly dangKyVeXeService: DangKyVeXeService) { }
 

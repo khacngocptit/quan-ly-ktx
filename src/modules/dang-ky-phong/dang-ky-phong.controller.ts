@@ -10,7 +10,7 @@ import { Authorization } from "src/common/decorator/auth.decorator";
 
 @Controller("dang-ky-phong")
 @ApiTags("Dang ky phong")
-@Authorization()
+// @Authorization()
 export class DangKyPhongController {
     constructor(private readonly dangKyPhongService: DangKyPhongService) { }
 

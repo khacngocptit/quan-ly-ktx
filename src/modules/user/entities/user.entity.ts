@@ -34,6 +34,7 @@ export class User {
      * @example "example@domain.co"
      */
     @IsEmail()
+    @IsOptional()
     @Prop({ trim: true, lowercase: true })
     email: string;
 
@@ -66,7 +67,7 @@ export class User {
 
     @IsString()
     @Prop()
-    soCMND: string;
+    cmtCccd: string;
 
     @IsDateString()
     @Prop()

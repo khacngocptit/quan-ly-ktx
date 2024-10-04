@@ -25,7 +25,7 @@ import { UserService } from "../service/user.service";
 
 @Controller("user")
 @ApiTags("user")
-@Authorization()
+// @Authorization()
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -45,6 +45,15 @@ export class UserController {
         @QueryCondition(UserCondition) condition: UserCondition,
     ): Promise<UserPageableResponseDto> {
         const data = await this.userService.findPageable(condition, option);
+        return ResponseDto.create(data);
+    }
+
+    @Get("all")
+    @ApiCondition()
+    async findAll(
+        @QueryCondition(UserCondition) condition: UserCondition,
+    ) {
+        const data = await this.userService.findAll(condition);
         return ResponseDto.create(data);
     }
 
