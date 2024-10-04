@@ -8,6 +8,8 @@ import { DichVuKtx, DichVuKtxDocument } from "../dich-vu-ktx/dich-vu-ktx.entity"
 import { HoaDon, HoaDonDocument } from "../hoa-don/hoa-don.entity";
 import { CreateDangKySuDungDichVuDto } from "./dto/create-dang-ky-su-dung-dich-vudto";
 import { LoaiHoaDon, TrangThaiThanhToan } from "../hoa-don/common/hoa-don.constant";
+// import  from "assert";
+import * as moment from "moment";
 
 @Injectable()
 export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichVuDocument> {
@@ -30,6 +32,8 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
         const result = await this.dangKyDichVuModel.create({
             ...doc,
             donGia: dichVu.donGia,
+            thang: moment(doc.thoiGianBatDauSuDung).month(),
+            nam: moment(doc.thoiGianBatDauSuDung).year(),
         });
         const hoaDon: Partial<HoaDon> = {
             donGia: dichVu.donGia,
@@ -106,9 +110,14 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
     }
 
     async thongKeDichVu(
-
+        nam: number
     ) {
         const result = await this.dangKyDichVuModel.aggregate([
+            {
+                $match: {
+                    nam,
+                },
+            },
             {
                 $lookup: {
                     from: DB_DICH_VU_KTX,

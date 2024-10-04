@@ -62,7 +62,7 @@ export class KhachVaoRaKtxService extends MongoRepository<KhachVaoRaKtxDocument>
                     danhSachKhach: [],
                 };
                 pre[curr._id.idSinhVien].danhSachKhach.push({
-                    hoDen: curr.hoTenKhach,
+                    hoTen: curr.hoTenKhach,
                     cmtCccd: curr._id.cmtCccd,
                     ngaySinh: curr.ngaySinhKhach,
                     soLanDen: curr.soLanDen,
@@ -71,6 +71,6 @@ export class KhachVaoRaKtxService extends MongoRepository<KhachVaoRaKtxDocument>
             return pre;
         }, {});
 
-        return result;
+        return Object.values(result);
     }
 }

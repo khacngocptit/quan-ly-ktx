@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ApiCondition, ApiPageableQuery, QueryCondition, FetchPageableQuery } from "src/common/decorator/api.decorator";
 import { ResponseDto } from "src/common/dto/response/response.dto";
@@ -53,11 +53,11 @@ export class DangKySuDungDichVuController {
         return ResponseDto.create(data);
     }
 
-    @Get("thong-ke/dich-vu")
+    @Get("thong-ke/dich-vu/nam/:nam")
     async thongKeDichVu(
-
+        @Param("nam", ParseIntPipe) nam: number
     ) {
-        const data = await this.dangKySuDungDichVuService.thongKeDichVu();
+        const data = await this.dangKySuDungDichVuService.thongKeDichVu(nam);
         return ResponseDto.create(data);
     }
 
