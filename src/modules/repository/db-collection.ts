@@ -12,7 +12,6 @@ export const DB_TOPIC = "Topic";
 export const DB_KHOA_SINH_VIEN = "KhoaSinhVien";
 export const DB_PHONG = "Phong";
 export const DB_KHACH_VAO_RA_KTX = "KhachVaoRaKtx";
-export const DB_DANG_KY_KTX = "DangKyKtx";
 export const DB_HOA_DON = "HoaDon";
 export const DB_DANG_KY_VE_XE = "DangKyVeXeThang";
 export const DB_GUI_XE = "GuiXe";

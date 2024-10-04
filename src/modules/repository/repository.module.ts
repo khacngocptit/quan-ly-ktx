@@ -35,7 +35,7 @@ import { HoaDonSchema } from "../hoa-don/hoa-don.entity";
             { name: db.DB_KHACH_VAO_RA_KTX, schema: KhachVaoRaKtxSchema },
             { name: db.DB_DICH_VU_KTX, schema: DichVuKtxSchema },
             { name: db.DB_QUAN_LY_XE, schema: QuanLyXeSchema },
-            { name: db.DB_DANG_KY_KTX, schema: DangKyPhongSchema },
+            { name: db.DB_DANG_KY_THUE_PHONG, schema: DangKyPhongSchema },
             { name: db.DB_DANG_KY_VE_XE, schema: DangKyVeXeSchema },
             { name: db.DB_DANG_KY_DICH_VU, schema: DangKySuDungDichVuSchema },
             { name: db.DB_DANG_KY_THUE_PHONG, schema: DangKyPhongSchema },
