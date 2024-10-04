@@ -55,6 +55,8 @@ export class DangKyPhongService extends MongoRepository<DangKyPhongDocument> {
             soLuong: 1,
             thanhTien: phong.donGia * 1,
             trangThaiThanhToan: TrangThaiThanhToan.CHUA_THANH_TOAN,
+            thang: result.thang,
+            nam: result.nam,
         };
 
         await this.hoaDonModel.create(hoaDon);

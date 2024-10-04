@@ -6,9 +6,12 @@ import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { DangKySuDungDichVuService } from "./dang-ky-su-dung-dich-vu.service";
 import { CreateDangKySuDungDichVuDto } from "./dto/create-dang-ky-su-dung-dich-vudto";
 import { DangKySuDungDichVuConditionDto } from "./dto/dang-ky-su-dung-dich-vu-condition.dto";
+import { PageableDto } from "src/common/dto/pageable.dto";
+import { Authorization } from "src/common/decorator/auth.decorator";
 
 @Controller("dang-ky-su-dung-dich-vu")
 @ApiTags("Dang ky su dung dich vu")
+@Authorization()
 export class DangKySuDungDichVuController {
     constructor(private readonly dangKySuDungDichVuService: DangKySuDungDichVuService) { }
 
@@ -19,8 +22,9 @@ export class DangKySuDungDichVuController {
         @QueryCondition(DangKySuDungDichVuConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.dangKySuDungDichVuService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.dangKySuDungDichVuService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien").populate("idPhong").populate("idDichVu")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")

@@ -6,9 +6,12 @@ import { ResponseDto } from "src/common/dto/response/response.dto";
 import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { CreateKhachVaoRaKtxDto } from "./dto/create-khach-vao-ra-ktx.dto";
 import { KhachVaoRaKtxConditionDto } from "./dto/khach-vao-ra-ktx-condition.dto";
+import { Authorization } from "src/common/decorator/auth.decorator";
+import { PageableDto } from "src/common/dto/pageable.dto";
 
 @Controller("khach-vao-ra-ktx")
 @ApiTags("Khach vao ra ktx")
+@Authorization()
 export class KhachVaoRaKtxController {
     constructor(private readonly khachVaoRaKtxService: KhachVaoRaKtxService) { }
 
@@ -19,8 +22,9 @@ export class KhachVaoRaKtxController {
         @QueryCondition(KhachVaoRaKtxConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.khachVaoRaKtxService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.khachVaoRaKtxService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")
@@ -28,7 +32,7 @@ export class KhachVaoRaKtxController {
     async getMany(
         @QueryCondition(KhachVaoRaKtxConditionDto) condition: any,
     ) {
-        const data = await this.khachVaoRaKtxService.get(condition);
+        const data = await this.khachVaoRaKtxService.getMany(condition);
         return ResponseDto.create(data);
     }
 

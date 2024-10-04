@@ -7,10 +7,11 @@ import { CreateDangKyPhongDto } from "./dto/create-dang-ky-phong.dto";
 import { DangKyPhongConditionDto } from "./dto/dang-ky-phong-condition.dto";
 import { ApiTags } from "@nestjs/swagger";
 import { Authorization } from "src/common/decorator/auth.decorator";
+import { PageableDto } from "src/common/dto/pageable.dto";
 
 @Controller("dang-ky-phong")
 @ApiTags("Dang ky phong")
-// @Authorization()
+@Authorization()
 export class DangKyPhongController {
     constructor(private readonly dangKyPhongService: DangKyPhongService) { }
 
@@ -21,8 +22,9 @@ export class DangKyPhongController {
         @QueryCondition(DangKyPhongConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.dangKyPhongService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.dangKyPhongService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien").populate("idPhong")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")

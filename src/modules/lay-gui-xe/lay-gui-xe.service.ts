@@ -50,6 +50,8 @@ export class LayGuiXeService extends MongoRepository<LayGuiXeDocument> {
                     soLuong: 1,
                     thanhTien: 3000,
                     trangThaiThanhToan: TrangThaiThanhToan.CHUA_THANH_TOAN,
+                    thang: result.thang,
+                    nam: result.nam,
                 };
                 await this.hoaDonModel.create(hoaDon);
             }

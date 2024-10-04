@@ -11,13 +11,16 @@ import { DB_PHONG, DB_QUAN_LY_XE, DB_USER } from "src/modules/repository/db-coll
 
 export class QuanLyXe {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId, ref: DB_PHONG,
+
+    })
     idPhong: string;
 
     phong?: PhongKtx;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;

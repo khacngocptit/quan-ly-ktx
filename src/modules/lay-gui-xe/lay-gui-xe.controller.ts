@@ -7,10 +7,11 @@ import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { CreateLayGuiXeDto } from "./dto/create-lay-gui-xe.dto";
 import { LayGuiXeConditionDto } from "./dto/lay-gui-xe-condition.dto";
 import { LayGuiXeService } from "./lay-gui-xe.service";
+import { PageableDto } from "src/common/dto/pageable.dto";
 
 @Controller("lay-gui-xe")
-    @ApiTags("Lay gui xe")
-// @Authorization()
+@ApiTags("Lay gui xe")
+@Authorization()
 export class LayGuiXeController {
     constructor(private readonly layGuiXeService: LayGuiXeService) { }
 
@@ -21,8 +22,9 @@ export class LayGuiXeController {
         @QueryCondition(LayGuiXeConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.layGuiXeService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.layGuiXeService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien").populate("idXe")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")

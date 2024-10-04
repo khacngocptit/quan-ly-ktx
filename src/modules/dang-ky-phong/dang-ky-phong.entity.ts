@@ -11,13 +11,13 @@ import * as mongoose from "mongoose";
 
 export class DangKyPhong {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_PHONG })
     idPhong: string;
 
     phong?: PhongKtx;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;

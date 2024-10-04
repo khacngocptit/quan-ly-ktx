@@ -12,7 +12,7 @@ import { LoaiHoaDon, TrangThaiThanhToan } from "./common/hoa-don.constant";
 export class HoaDon {
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;
@@ -20,6 +20,14 @@ export class HoaDon {
     @IsNumber()
     @Prop({ default: 1 })
     soLuong: number;
+
+    @IsNumber()
+    @Prop()
+    thang: number;
+
+    @IsNumber()
+    @Prop()
+    nam: number;
 
     @IsNumber()
     @Prop()

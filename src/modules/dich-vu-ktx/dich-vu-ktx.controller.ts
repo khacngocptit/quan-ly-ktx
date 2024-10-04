@@ -6,9 +6,11 @@ import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { DichVuKtxService } from "./dich-vu-ktx.service";
 import { CreateDichVuKtxDto } from "./dto/create-dich-vu-ktx.dto";
 import { DichVuKtxConditionDto } from "./dto/dich-vu-ktx-condition.dto";
+import { Authorization } from "src/common/decorator/auth.decorator";
 
 @Controller("dich-vu")
 @ApiTags("Dich vu KTX")
+@Authorization()
 export class DichVuKtxController {
     constructor(private readonly dichVuKtxService: DichVuKtxService) { }
 

@@ -34,7 +34,7 @@ export class DangKyVeXeService extends MongoRepository<DangKyVeXeDocument> {
             idSinhVien: doc.idSinhVien,
         });
 
-        if (checkDaDangKy || checkDaDangKy.length >= 2) {
+        if (checkDaDangKy && checkDaDangKy.length >= 2) {
             throw new BadRequestException("Tháng này đã đăng ký đủ vé xe tối đa");
         }
 
@@ -45,6 +45,8 @@ export class DangKyVeXeService extends MongoRepository<DangKyVeXeDocument> {
             idSource: String(result._id),
             loaiHoaDon: LoaiHoaDon.VE_XE,
             soLuong: 1,
+            thang: result.thang,
+            nam: result.nam,
             thanhTien: 100000,
             trangThaiThanhToan: TrangThaiThanhToan.CHUA_THANH_TOAN,
         };

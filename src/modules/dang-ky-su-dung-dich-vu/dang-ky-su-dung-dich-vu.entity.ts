@@ -12,13 +12,13 @@ import { DichVuKtx } from "src/modules/dich-vu-ktx/dich-vu-ktx.entity";
 
 export class DangKySuDungDichVu {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_PHONG })
     idPhong: string;
 
     phong?: PhongKtx;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;
@@ -32,7 +32,7 @@ export class DangKySuDungDichVu {
     nam: number;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_DICH_VU_KTX })
     idDichVu: string;
 
     dichVu?: DichVuKtx;

@@ -8,10 +8,11 @@ import { CreateHoaDonDto } from "./dto/create-hoa-don.dto";
 import { HoaDonConditionDto } from "./dto/hoa-don-condition.dto";
 import { HoaDonService } from "./hoa-don.service";
 import { NextFunction, Response } from "express";
+import { PageableDto } from "src/common/dto/pageable.dto";
 
 @Controller("hoa-don")
-    @ApiTags("Hoa don")
-// @Authorization()
+@ApiTags("Hoa don")
+@Authorization()
 export class HoaDonController {
     constructor(private readonly hoaDonService: HoaDonService) { }
 
@@ -22,8 +23,9 @@ export class HoaDonController {
         @QueryCondition(HoaDonConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.hoaDonService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.hoaDonService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")

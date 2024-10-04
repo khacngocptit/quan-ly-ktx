@@ -11,13 +11,13 @@ import { DB_DANG_KY_VE_XE, DB_QUAN_LY_XE, DB_USER } from "src/modules/repository
 
 export class DangKyVeXe {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_QUAN_LY_XE })
     idXe: string;
 
     xe?: QuanLyXe;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;

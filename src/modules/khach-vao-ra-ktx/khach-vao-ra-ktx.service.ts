@@ -4,6 +4,7 @@ import { KhachVaoRaKtxDocument } from "./khach-vao-ra-ktx.entity";
 import { DB_KHACH_VAO_RA_KTX, DB_USER } from "../repository/db-collection";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { KhachVaoRaKtxConditionDto } from "./dto/khach-vao-ra-ktx-condition.dto";
 
 @Injectable()
 export class KhachVaoRaKtxService extends MongoRepository<KhachVaoRaKtxDocument> {
@@ -12,6 +13,10 @@ export class KhachVaoRaKtxService extends MongoRepository<KhachVaoRaKtxDocument>
         private readonly khachVaoRaKtxModel: Model<KhachVaoRaKtxDocument>
     ) {
         super(khachVaoRaKtxModel);
+    }
+
+    async getMany(condition: KhachVaoRaKtxConditionDto) {
+        return this.khachVaoRaKtxModel.find(condition).populate("idSinhVien");
     }
 
     async thongKeKhachDenKtx(

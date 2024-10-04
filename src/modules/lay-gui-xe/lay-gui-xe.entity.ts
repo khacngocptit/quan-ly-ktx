@@ -10,13 +10,13 @@ import { User } from "../user/entities/user.entity";
 
 export class LayGuiXe {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
     idSinhVien: string;
 
     sinhVien?: User;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_QUAN_LY_XE })
     idXe: string;
 
     xe?: User;

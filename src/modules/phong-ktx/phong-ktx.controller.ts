@@ -6,9 +6,11 @@ import { PhongKtxConditionDto } from "./dto/phong-ktx-condition.dto";
 import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { CreatePhongKtxDto } from "./dto/create-phong-ktx.dto";
 import { ResponseDto } from "src/common/dto/response/response.dto";
+import { Authorization } from "src/common/decorator/auth.decorator";
 
 @Controller("phong-ktx")
 @ApiTags("Phong KTX")
+@Authorization()
 export class PhongKtxController {
     constructor(private readonly phongKtxService: PhongKtxService) { }
 

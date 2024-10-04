@@ -6,9 +6,12 @@ import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { CreateQuanLyXeDto } from "./dto/create-quan-ly-xe.dto";
 import { QuanLyXeConditionDto } from "./dto/quan-ly-xe-condition.dto";
 import { QuanLyXeService } from "./quan-ly-xe.service";
+import { PageableDto } from "src/common/dto/pageable.dto";
+import { Authorization } from "src/common/decorator/auth.decorator";
 
 @Controller("quan-ly-xe")
 @ApiTags("Quan ly xe")
+@Authorization()
 export class QuanLyXeController {
     constructor(private readonly quanLyXeService: QuanLyXeService) { }
 
@@ -19,8 +22,9 @@ export class QuanLyXeController {
         @QueryCondition(QuanLyXeConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.quanLyXeService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.quanLyXeService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien").populate("idPhong")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1]));
     }
 
     @Get("many")

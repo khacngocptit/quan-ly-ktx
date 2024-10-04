@@ -7,10 +7,11 @@ import { FetchQueryOption } from "src/common/pipe/fetch-query-option.interface";
 import { DangKyVeXeService } from "./dang-ky-ve-xe.service";
 import { CreateDangKyVeXeDto } from "./dto/create-dang-ky-ve-xe.dto";
 import { DangKyVeXeConditionDto } from "./dto/dang-ky-ve-xe-condition.dto";
+import { PageableDto } from "src/common/dto/pageable.dto";
 
 @Controller("dang-ky-ve-xe")
 @ApiTags("Dang ky ve xe")
-// @Authorization()
+@Authorization()
 export class DangKyVeXeController {
     constructor(private readonly dangKyVeXeService: DangKyVeXeService) { }
 
@@ -21,8 +22,9 @@ export class DangKyVeXeController {
         @QueryCondition(DangKyVeXeConditionDto) condition: any,
         @FetchPageableQuery() option: FetchQueryOption
     ) {
-        const data = await this.dangKyVeXeService.getPaging(condition, option);
-        return ResponseDto.create(data);
+        const { total, data } = this.dangKyVeXeService.getPagingComponent(condition, option);
+        const result = await Promise.all([total, data.populate("idSinhVien").populate("idXe")]);
+        return ResponseDto.create(PageableDto.create(option, result[0], result[1] ));
     }
 
     @Get("many")
@@ -30,7 +32,7 @@ export class DangKyVeXeController {
     async getMany(
         @QueryCondition(DangKyVeXeConditionDto) condition: any,
     ) {
-        const data = await this.dangKyVeXeService.get(condition);
+        const data = await this.dangKyVeXeService.get(condition).populate("idSinhVien");
         return ResponseDto.create(data);
     }
 

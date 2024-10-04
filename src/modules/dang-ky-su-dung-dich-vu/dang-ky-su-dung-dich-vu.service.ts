@@ -37,6 +37,8 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
             idSource: String(result._id),
             loaiHoaDon: LoaiHoaDon.DICH_VU,
             soLuong: 1,
+            thang: result.thang,
+            nam: result.nam,
             thanhTien: dichVu.donGia * 1,
             trangThaiThanhToan: TrangThaiThanhToan.CHUA_THANH_TOAN,
         };
