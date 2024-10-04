@@ -147,7 +147,7 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
         return result.map(e => {
             return {
                 thongTinDichVu: e?.dichVuInfo?.[0] || {},
-                thang: e._id.month,
+                thang: e._id.month + 1,
                 nam: e._id.year,
                 tongDoanhThu: e?.tongDoanhThu || 0,
             };
