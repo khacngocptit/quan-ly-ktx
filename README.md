@@ -2,6 +2,7 @@
 
 ### Create `.env` file
 ```bash
+nvm use 16
 cp example.env .env
 nano .env
 
@@ -31,5 +32,4 @@ ONE_SIGNAL_API_KEY=abcd
 ```bash
 npm i
 npm run build
-docker-compose up -d
 ```
