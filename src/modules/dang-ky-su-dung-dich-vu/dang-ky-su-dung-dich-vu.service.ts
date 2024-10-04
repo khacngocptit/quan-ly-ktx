@@ -71,8 +71,8 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
             {
                 $match: {
                     thoiGianBatDauSuDung: {
-                        $gte: startDate,
-                        $lte: endDate,
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate),
                     },
                 },
             },
@@ -89,7 +89,20 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
             },
 
         ]);
-        return data;
+        const result = data.reduce((pre, curr) => {
+            if (!pre[curr._id.idSinhVien]) {
+                pre[curr._id.idSinhVien] = {
+                    thongTinSinhVien: curr.sinhVienInfo[0],
+                    danhSachDichVu: [],
+                };
+            }
+            pre[curr._id.idSinhVien].danhSachDichVu.push({
+                thongTinDichVu: curr?.dichVuInfo?.[0] || {},
+                tongTien: curr?.tongTien || 0,
+            });
+            return pre;
+        }, {});
+        return Object.values(result);
     }
 
     async thongKeDichVu(
@@ -112,7 +125,7 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
                         year: "$nam",
                     },
                     tongDoanhThu: { $sum: "$donGia" },
-                    tenDichVu: { $first: "$dichVu.ten" },
+                    dichVuInfo: { $first: "$dichVu" },
                 },
             },
             {
@@ -122,6 +135,13 @@ export class DangKySuDungDichVuService extends MongoRepository<DangKySuDungDichV
                 },
             },
         ]);
-        return result;
+        return result.map(e => {
+            return {
+                thongTinDichVu: e?.dichVuInfo?.[0] || {},
+                thang: e._id.month,
+                nam: e._id.year,
+                tongDoanhThu: e?.tongDoanhThu || 0,
+            };
+        });
     }
 }

@@ -37,8 +37,8 @@ export class HoaDonService extends MongoRepository<HoaDonDocument> {
                         loaiHoaDon: "$loaiHoaDon",
                     },
                     total: { $sum: "$thanhTien" },
-                    idSinhVien: { $first: "idSinhVien" },
-                    loaiHoaDon: { $first: "loaiHoaDon" },
+                    idSinhVien: { $first: "$idSinhVien" },
+                    loaiHoaDon: { $first: "$loaiHoaDon" },
                 },
             },
             {
@@ -47,10 +47,10 @@ export class HoaDonService extends MongoRepository<HoaDonDocument> {
                     localField: "idSinhVien",
                     foreignField: "_id",
                     as: "sinhVien",
+
                 },
             },
         ]);
-
         const result = data.reduce((pre, curr) => {
             if (!pre[curr._id.idSinhVien]) {
                 pre[curr._id.idSinhVien] = {
@@ -58,7 +58,7 @@ export class HoaDonService extends MongoRepository<HoaDonDocument> {
                     thuePhong: 0,
                     veXe: 0,
                     guiXe: 0,
-                    sinhVien: curr.sinhVien,
+                    sinhVien: curr.sinhVien[0],
                 };
             }
             switch (curr.loaiHoaDon) {
